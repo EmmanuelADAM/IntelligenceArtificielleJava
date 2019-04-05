@@ -1,5 +1,3 @@
-package centralised;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +36,7 @@ public class RandomQueens
    /** memory used to found the solutions */
    ArrayList<Long> mem;
    Runtime runtime;
+   
 
 
    /**initialize the arrays*/
@@ -69,7 +68,11 @@ public class RandomQueens
          int col = queens[i];
          for (int j = i + 1; j < nb; j++)
          {
-//TODO: calculer les conflits pour les reines i & j
+            if (col == queens[j] || (col - i) == (queens[j] - j) || (col + i) == (queens[j] + j))
+            {
+               conflicts[i]++;
+               conflicts[j]++;
+            }
          }
       }
    }
@@ -133,8 +136,8 @@ public class RandomQueens
          // compute the eventual conflicts if the column i is chosen 
          for (int j = 0; j < nb; j++)
          {
-//TODO:calculer le nb de conflits entre la reine queen et la reine j
-            //if.... -> nbConflicts++;
+            if (col != j && (col == queens[j] || (col - queen) == (queens[j] - j) || (col + queen) == (queens[j] + j)))
+               nbConflicts++;
          }
          // if a better place is found, take it
          // or if it is a place with the same nb on conflicts, choose it, or no....
@@ -196,27 +199,32 @@ public class RandomQueens
    public String toString()
    {
       StringBuilder sb = new StringBuilder();
+      /**just to gain some time when printing*/
+      String coma=",";
+
       if (verboseLevel > 1)
       {
+         String x="[X]";
+         String noOne = "[ ]";
          for (int i = 0; i < nb; i++) 
          {
             for (int j = 0; j < nb; j++) 
             {
                if (queens[i] == j)
-                  sb.append("X");
+                  sb.append(x);
                else
-                  sb.append("-");
+                  sb.append(noOne);
             }
             sb.append("\n");
          }
       }
       sb.append("rows of queen#0 -- queen#").append(nb-1).append(": ");
       for (int i = 0; i < nb; i++)
-         sb.append(queens[i]).append(",");
+         sb.append(queens[i]).append(coma);
       sb.append("\n");
       sb.append("conflicts of queen#0 -- queen#").append(nb-1).append(": ");
       for (int i = 0; i < nb; i++)
-         sb.append(conflicts[i]).append(",");
+         sb.append(conflicts[i]).append(coma);
       return sb.toString();
    }
 
@@ -227,7 +235,7 @@ public class RandomQueens
       int nb = 1000;
       RandomQueens rq = new RandomQueens(nb);
       rq.verboseLevel = 0;
-      int nbTests = 5;
+      int nbTests = 3;
       for (int i = 0; i < nbTests; i++)
       {
          rq.randomize();
