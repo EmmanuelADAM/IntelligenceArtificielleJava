@@ -174,7 +174,8 @@ public class RandomQueens
       }
       // some lines to compute the time spent, the memory used, 
       long timeB = System.currentTimeMillis();
-      System.out.println("solution found in " + (timeB - timeA) + " ms for " + nb + " queens..");
+      if (sum==0) System.out.println("solution found in " + (timeB - timeA) + " ms for " + nb + " queens..");
+      else System.out.println("no solution after  " + (nbMoves) + " moves..");
       long memory = (runtime.totalMemory() - runtime.freeMemory())/1024L;
       mem.add(memory);
       System.out.println("memory used = " + memory + "ko");
@@ -183,7 +184,7 @@ public class RandomQueens
       if (movedQueen >= 0) conflicts[movedQueen]++;
       System.out.println("nb of conflicts=" + sumConflicts() + ",  nb of moves= " + nbMoves);
       moves.add(nbMoves);
-      System.out.println("here is the solution : ");
+      System.out.println("here is the state : ");
       System.out.println(this);
    }
 
