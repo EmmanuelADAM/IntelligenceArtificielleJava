@@ -1,37 +1,17 @@
-## Welcome to GitHub Pages
+# IntelligenceArtificielleJava
 
-You can use the [editor on GitHub](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Quelques algos en Java issus de l'Intelligence Artificielle
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Recherche aléatoire (MonteCarlo)
 
-### Markdown
+- compteEstBonSimplifié est un exemple de recherche aléatoire pour la solution au problème du "compte est bon" : https://fr.wikipedia.org/wiki/Des_chiffres_et_des_lettres#Le_Compte_est_bon
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+- nQueensRandom est un exemple de résolution du problèmes des n-reines par placement aléatoire puis adaptation pour diminuer les conflits. temps de traitement : env. 1.5 secondes pour placer 1000 reines dans un echiquier de 1000x1000; 11ms pour placer 100 reines sur un echiquier de 100x100, et 0.6ms pour placer 8 reines.... https://fr.wikipedia.org/wiki/Problème_des_huit_dames
 
-```markdown
-Syntax highlighted code block
+- MCTS : MonteCarlo Tree Search : 2 applications permettant à 1 joueur d'affronter une IA qui s'est entrainée à l'aide de l'algorithme MonteCarlo Tree Search.
+  - TicTacToe est donc le jeu du morpion du du OXO.. L'IA par MonteCarlo n'a pas été optimisée, vous pouvez gagner.
+  - P4 est le jeu de 'Puissance4' ou 'Aligne4'. L'IA a été ici optimisée.. 
 
-# Header 1
-## Header 2
-### Header 3
+## Jeux (alphabeta, minimax)
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+- jeux/jeuDuCarre contient des classes java permettant à 2 joueurs de s'affronter sur le jeu du Carré.. Une mini IA basique permet également à 1 joueur de jouer contre elle..
