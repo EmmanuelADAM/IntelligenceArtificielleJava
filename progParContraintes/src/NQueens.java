@@ -1,6 +1,11 @@
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
+import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.search.limits.FailCounter;
+import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
+import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
 import org.chocosolver.solver.variables.IntVar;
 
 import java.util.Arrays;
@@ -30,7 +35,6 @@ public class NQueens {
         }
         System.out.println("nb contraintes = "+ model.getCstrs().length);
 
-        // Chercher une solution avec solver par défaut
         Solution solution = model.getSolver().findSolution();
 
         if(solution != null){
@@ -109,6 +113,51 @@ public class NQueens {
         }
         return null;
     }
+
+    /**résolution du problème des n reines
+     * ecriture "facile"*/
+    static int[] nQueens_4(int n)
+    {
+        Model model = new Model("probleme des "+ n + " reines");
+        IntVar[] colonnes = model.intVarArray("reine_", n, 1, n, false);
+        IntVar[] diag1 = new IntVar[n];
+        IntVar[] diag2 = new IntVar[n];
+        for(int i = 0 ; i < n; i++){
+            diag1[i] = colonnes[i].sub(i).intVar();
+            diag2[i] = colonnes[i].add(i).intVar();
+        }
+        model.post(
+                model.allDifferent(colonnes),
+                model.allDifferent(diag1),
+                model.allDifferent(diag2)
+        );
+        System.out.println("nb contraintes = "+ model.getCstrs().length);
+
+        Solver s = model.getSolver();
+        s.setSearch(Search.intVarSearch(
+        // selects the variable of smallest domain size
+                new FirstFail(model),
+        // selects the smallest domain value (lower bound)
+                new IntDomainMin(),
+        // variables to branch on
+                colonnes));
+
+        Solution solution = model.getSolver().findSolution();
+
+        if(solution != null){
+            int[] res = new int[n];
+            for(int i=0; i<n; i++){
+                res[i] = solution.getIntVal(colonnes[i]);
+            }
+            System.out.println(Arrays.toString(res));
+            return res;
+        }
+        System.out.println(solution);
+
+        return null;
+
+    }
+
 
     /**résolution du problème des n reines par recherche locale
      * configuration du mode de sélection de variables et du mode de recherche*/
@@ -211,9 +260,9 @@ public class NQueens {
 
     // Programme principal
     public static void main(String[] args) {
-        int n = 100;
-        int[] positions1 = nQueens_3(n);// nQueens_1(n);
-        drawBoard(positions1);
+        int n = 200;
+        int[] positions = nQueens_4(n);// nQueens_1(n);
+        drawBoard(positions);
 
 
     }
