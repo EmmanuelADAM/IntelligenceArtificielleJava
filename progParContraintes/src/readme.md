@@ -72,7 +72,13 @@ A réserver pour des problèmes simples donc :<br>
 
 
 ---
+
 ## Paramètrage du solveur
+
+Par défaut, le solveur de Choco utilise :
+- comme sélecteur devariables : InputOrder = Parcourt les variables dans l'ordre où elles apparaissent dans le modèle.
+- comme sélecteur de valeurs : IntDomainMin = Sélectionne la plus petite valeur dans le domaine de la variable.
+
 Le solveur peut être paramétré de différentes façons.
 **Stratégies de recherche** :<br>
 Par défaut, le solveur utilise une stratégie de recherche par défaut. 
