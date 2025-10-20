@@ -15,9 +15,9 @@ Résolution du puzzle des n reines avec ChocoSolver.
 
 **Particularités :**
 - utilisation de contraintes arithmétiques, de allDifferents
-- différentes stratégies de recherche sont proposées.
+- différentes stratégies  de recherche sont proposées.
 
-♛⬜⬛⬜⬛⬜⬛⬜ 
+♛⬜⬛⬜⬛⬜⬛⬜ <br>
 ⬜⬛⬜⬛♛⬛⬜⬛
 ⬛⬜⬛⬜⬛⬜⬛♛
 ⬜⬛⬜⬛⬜♛⬜⬛
