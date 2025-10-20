@@ -4,7 +4,7 @@ Quelques exercices de CSP en ChocoSolver.
 
 ---
 
-*Voir le ficher [readmeChocoSolver (../readmeChocoSolver.md) pour plus d'informations sur la librairie chocoSolver.*
+*Voir le ficher [readmeChocoSolver] (./readmeChocoSolver.md) pour plus d'informations sur la librairie chocoSolver.*
 
 ---
 
