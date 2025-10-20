@@ -26,7 +26,7 @@ Résolution du puzzle des n reines avec ChocoSolver.
 ⬛♛⬛⬜⬛⬜⬛⬜ <br>
 ⬜⬛⬜♛⬜⬛⬜⬛ <br>
 
-Le code des N reines en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java) permet de resoudre ce type de puzzle.
+Le code des N reines en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java) pour resoudre ce type de puzzle.
 
 
 ---
@@ -41,7 +41,7 @@ Résolution du puzzle carré magique avec ChocoSolver.
   - recopie d'une partie de tableau, 
   - somme de valeurs contraintes.
 
-Le code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/MagicSquare.java) permet de resoudre ce type de puzzle.
+Le code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/MagicSquare.java) pour resoudre ce type de puzzle.
 
 
 ---
@@ -60,7 +60,7 @@ issue du site [villemin.gerard.free.fr/aJeux](http://villemin.gerard.free.fr/aJe
 
 **Particularités** : utilisation de allDifferent, inégalités.
 
-Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/TecToNic.java) permet de resoudre ce type de puzzle.
+Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/TecToNic.java) pour resoudre ce type de puzzle.
 
 ---
 
@@ -72,7 +72,7 @@ Particularité :
  - accès à un élément d'une matrice à partir d'indices de type variables contraintes.
  - somme des éléments d'un tableau de variables contraintes.
 
-Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/VRPChoco.java) permet de resoudre ce type de problème.
+Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/VRPChoco.java) pour resoudre ce type de problème.
 
 ---
 
@@ -105,7 +105,7 @@ Particularité :
  - utilisation d'une matrice de variables contraintes.
  - produit scalaire entre une ligne de la matrice et un vecteur.
 
-Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/RBAC.java) permet de resoudre ce type de problème.
+Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/RBAC.java)  pour resoudre ce type de problème.
 
 ---
 
@@ -125,4 +125,4 @@ Particularité :
   - exemple d'utilisation de la reification 
   - recherche aléatoire de solutions.
 
-Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/KeyGen.java) permet de resoudre ce type de problème.
+Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/KeyGen.java)  pour resoudre ce type de problème.
