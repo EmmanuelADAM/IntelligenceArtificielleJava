@@ -15,8 +15,8 @@ Quelques algos en Java issus de l'Intelligence Artificielle
 - [nQueensRandom](./nQueensRandom/src/centralised) est un exemple de résolution du problème des n-reines par placement aléatoire puis adaptation pour diminuer les conflits. temps de traitement : env. 1.5 secondes pour placer 1000 reines dans un echiquier de 1000x1000; 11ms pour placer 100 reines sur un echiquier de 100x100, et 0.6ms pour placer 8 reines, *etc.*
 
 ## Programmation par contraintes
-- [IntroChoco](./progParContraintes/src/readme.md) introduction à la programmation par contraintes avec la librairie [ChocoSolver](https://choco-solver.org/)
-- [exemples](./progParContraintes/src/) : quelques algos issus des tutoriels et de la littérature sur la programmation par contraintes avec la librairie [ChocoSolver](https://choco-solver.org/)
+- [Exemples](./progParContraintes/readme.md) : présentation des exemples de programmation par contraintes avec la librairie [ChocoSolver](https://choco-solver.org/)
+- [IntroChoco](./progParContraintes/readmeChocoSolver.md) introduction à la programmation par contraintes avec la librairie [ChocoSolver](https://choco-solver.org/)
 
 
 ## Jeux (alphabeta, minimax, MCTS)
