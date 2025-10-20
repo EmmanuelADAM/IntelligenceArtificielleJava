@@ -20,4 +20,20 @@ Voici un exemple de puzzle :
 ![TecToNic Example](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/TecToNic.jpg)
 issue du site [villemin.gerard.free.fr/aJeux](http://villemin.gerard.free.fr/aJeux/Tectonic.htm)
 
+**Contraintes utilisées** : allDifferent, inequality.
+
 Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/TecToNic.java) permet de resoudre ce type de puzzle.
+
+---
+
+### Problème classique du voyageur de commerce (TSP : Traveling Salesman Problem)
+Un grand classique :  exercice simple sur le problème de voyageur de commerce : construire le chemin hamiltonien (chemin qui passe 1 fois et 1 seule par tous les sommets du graphe) de longueur minimale.
+
+Particularité : 
+ - utilisation de contraintes de type circuit.
+ - accès à un élément d'une matrice à partir d'indices de type variables contraintes.
+ - somme des éléments d'un tableau de variables contraintes.
+
+Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/VRPChoco.java) permet de resoudre ce type de problème.
+
+---
