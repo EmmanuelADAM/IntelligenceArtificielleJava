@@ -37,3 +37,36 @@ Particularité :
 Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/VRPChoco.java) permet de resoudre ce type de problème.
 
 ---
+
+### Problème d'affectation de rôles  du voyageur de commerce (TSP : Traveling Salesman Problem)
+
+Le contrôle d’accès basé sur les rôles (**RBAC**) est un modèle d'autorisation permettant de contrôler l'accès des utilisateurs aux systèmes, aux applications et aux données en fonction de leurs rôles.
+
+Des utilisateurs jouent des rôles et ont besoin de permissions..
+
+Prenons :
+ - 4 utilisateurs $U={u_0,u_1,u_2,u_3}$
+ - 3 rôles $R={r_0,r_1,r_2}$
+ - 5 permissions $P={p_0,p_1,p_2,p_3,p_4}$
+
+Un rôle donne accès à des permissions :
+ - $r_0 \rightarrow \{p_0, p_1\}$
+ - $r_1 \rightarrow \{p_1, p_2, p_3\}$
+ - $r_2 \rightarrow \{p_3, p_4\}$
+
+Chaque utilisateur a besoin d’un ensemble minimal de permissions pour ses tâches : 
+ - $u_0 \rightarrow \{p_0, p_1\}$
+ - $u_1 \rightarrow \{p_1, p_3\}$
+ - $u_2 \rightarrow \{p_3, p_4\}$
+ - $u_3 \rightarrow \{p_0, p_2\}$
+
+On ajoute que personne ne peut posséder les rôles $r_0$ et $r_2$ en même temps (conflit de rôles).
+
+Particularité :
+ - utilisation de variables "booléennes" (en fait entiers entre 0 et 1).
+ - utilisation d'une matrice de variables contraintes.
+ - produit scalaire entre une ligne de la matrice et un vecteur.
+
+Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/RBAC.java) permet de resoudre ce type de problème.
+
+---
