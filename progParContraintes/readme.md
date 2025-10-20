@@ -26,7 +26,7 @@ Résolution du puzzle des n reines avec ChocoSolver.
 ⬛♛⬛⬜⬛⬜⬛⬜ <br>
 ⬜⬛⬜♛⬜⬛⬜⬛ <br>
 
-Le code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java) permet de resoudre ce type de puzzle.
+Le code des N reines en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java) permet de resoudre ce type de puzzle.
 
 
 ---
