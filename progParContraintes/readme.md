@@ -70,3 +70,21 @@ Particularité :
 Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/RBAC.java) permet de resoudre ce type de problème.
 
 ---
+
+### Problème de la génération de clé
+
+Générateur de clés sécurisées utilisant la programmation par contraintes avec ChocoSolver
+
+- La clé générée respecte les contraintes suivantes :
+  - Longueur fixe de 15 caractères
+  - Au moins 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux
+  - Pas de caractères répétitifs consécutifs
+  - Pas de séquences ou motifs interdits
+
+Particularité :
+  - utilisation de recherche d'une variable contrainte dans un ensemble.
+  - utilisation de ifThenElse pour modéliser des contraintes conditionnelles.
+  - exemple d'utilisation de la reification 
+  - recherche aléatoire de solutions.
+
+Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/KeyGen.java) permet de resoudre ce type de problème.
