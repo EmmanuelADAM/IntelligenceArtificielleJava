@@ -8,6 +8,44 @@ Quelques exercices de CSP en ChocoSolver.
 
 ---
 
+### N Reines
+Résolution du puzzle des n reines avec ChocoSolver.
+
+- Placer n reines sur un échiquier de taille n x n de telle sorte qu'aucune reine ne puisse en attaquer une autre.
+
+**Particularités :**
+- utilisation de contraintes arithmétiques, de allDifferents
+- différentes stratégies de recherche sont proposées.
+
+♛⬜⬛⬜⬛⬜⬛⬜ 
+⬜⬛⬜⬛♛⬛⬜⬛
+⬛⬜⬛⬜⬛⬜⬛♛
+⬜⬛⬜⬛⬜♛⬜⬛
+⬛⬜♛⬜⬛⬜⬛⬜
+⬜⬛⬜⬛⬜⬛♛⬛
+⬛♛⬛⬜⬛⬜⬛⬜
+⬜⬛⬜♛⬜⬛⬜⬛
+
+Le code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java) permet de resoudre ce type de puzzle.
+
+
+---
+
+### Carré magique
+Résolution du puzzle carré magique avec ChocoSolver.
+
+- Dans un carré magique d'ordre n, on place les entiers de 1 à n² de telle sorte que la somme des nombres dans chaque ligne, chaque colonne et les deux diagonales soit la même.
+- Cette somme constante, appelée constante magique, peut être calculée avec la formule : $M = n(n^2 + 1) / 2$.
+
+**Particularités :** 
+  - recopie d'une partie de tableau, 
+  - somme de valeurs contraintes.
+
+Le code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/MagicSquare.java) permet de resoudre ce type de puzzle.
+
+
+---
+
 ### TecToNic 
 Résolution du puzzle TecToNic avec ChocoSolver .
 - Le puzzle consiste à remplir une grille avec des chiffres en respectant des contraintes spécifiques liées aux régions colorées.
@@ -20,7 +58,7 @@ Voici un exemple de puzzle :
 ![TecToNic Example](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/TecToNic.jpg)
 issue du site [villemin.gerard.free.fr/aJeux](http://villemin.gerard.free.fr/aJeux/Tectonic.htm)
 
-**Contraintes utilisées** : allDifferent, inequality.
+**Particularités** : utilisation de allDifferent, inégalités.
 
 Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/TecToNic.java) permet de resoudre ce type de puzzle.
 

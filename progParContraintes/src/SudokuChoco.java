@@ -10,6 +10,15 @@ public class SudokuChoco {
     //Declaration de la grille
     static int[][] grille;
 
+    /**cree le model specifique au sudoku*/
+    static Model createModel(){
+        Model model = new Model("sudoku");
+        IntVar[][] chiffres = createVariables(model);
+        createConstraints(model, chiffres);
+        return model;
+    }
+
+
     static void initGame(){
         //Declaration de la grille
         grille = new int[][]{
@@ -24,6 +33,57 @@ public class SudokuChoco {
                 {0, 0, 0, 0, 0, 0, 1, 0, 0}
         };
     }
+
+    private static IntVar[][] createVariables(Model model) {
+        //une ligne ne doit pas comporter 2x la même valeur
+        IntVar[][] vars = new IntVar[nbvar][nbvar];
+        for(int i = 0; i < nbvar; i++){
+            for(int j = 0; j < nbvar; j++){
+                if(grille[i][j] == 0){
+                    //si la variable est libre, son domaine va de à 9
+                    vars[i][j] = model.intVar("x_"+i+"_"+j, 1, 9, false);
+                } else {
+                    //si la variable correspond à une case déjà valuée, son domaine va de cette valeur à cette valeur
+                    vars[i][j] = model.intVar("x_"+i+"_"+j, grille[i][j], grille[i][j], true);
+                }
+            }
+        }
+        return vars;
+    }
+
+
+    /**ajoute les contraintes spécifiques au sudoku*/
+    static void createConstraints(Model model, IntVar[][] chiffres){
+        //valeurs différentes sur chaque ligne
+        for(int i = 0; i < nbvar; i++) {
+            model.allDifferent(chiffres[i]).post();
+        }
+
+        //valeurs différentes sur chaque colonne
+        for(int j = 0; j < nbvar; j++){
+            IntVar[] col = new IntVar[nbvar];
+            for(int i = 0; i < nbvar; i++){
+                col[i] = chiffres[i][j];
+            }
+            model.allDifferent(col).post();
+        }
+
+        //chaque bloc de 9 cases ne doit comporter qu'une occurrence des valeurs de 1 à 9
+        for(int boxRow = 0; boxRow < 3; boxRow++){
+            for(int boxCol = 0; boxCol < 3; boxCol++){
+                IntVar[] box = new IntVar[nbvar];
+                int idx = 0;
+                for(int i = 0; i < 3; i++){
+                    for(int j = 0; j < 3; j++){
+                        box[idx++] = chiffres[boxRow * 3 + i][boxCol * 3 + j];
+                    }
+                }
+                model.allDifferent(box).post();
+            }
+        }
+    }
+
+
 
     /**affiche la grille de sudoku initiale*/
     static void printGame(){
@@ -47,58 +107,10 @@ public class SudokuChoco {
                 if ((j + 1) % 3 == 0) System.out.print("| ");
             }
             if ((i + 1) % 3 == 0) System.out.println("\n- - - + - - - + - - -");
-             else
-            System.out.println();
+            else System.out.println();
         }
     }
 
-    /**ajoute les contraintes spécifiques au sudoku*/
-    static void createConstraints(Model model){
-        //une ligne ne doit pas comporter 2x la même valeur
-        IntVar[][] vars = new IntVar[nbvar][nbvar];
-        for(int i = 0; i < nbvar; i++){
-            for(int j = 0; j < nbvar; j++){
-                if(grille[i][j] == 0){
-                    //si la variable est libre, son domaine va de à 9
-                    vars[i][j] = model.intVar("x_"+i+"_"+j, 1, 9, false);
-                } else {
-                    //si la variable correspond à une case déjà valuée, son domaine va de cette valeur à cette valeur
-                    vars[i][j] = model.intVar("x_"+i+"_"+j, grille[i][j], grille[i][j], true);
-                }
-            }
-            model.allDifferent(vars[i]).post();
-        }
-        //on ne crée plus les variables contraintes, elles sont maintenant toutes créées
-        //une colonne ne doit pas comporter 2x la même valeur
-        for(int j = 0; j < nbvar; j++){
-            IntVar[] col = new IntVar[nbvar];
-            for(int i = 0; i < nbvar; i++){
-                col[i] = vars[i][j];
-            }
-            model.allDifferent(col).post();
-        }
-        //chaque bloc de 9 cases ne doit comporter qu'une occurrence des valeurs de 1 à 9
-        for(int boxRow = 0; boxRow < 3; boxRow++){
-            for(int boxCol = 0; boxCol < 3; boxCol++){
-                IntVar[] box = new IntVar[nbvar];
-                int idx = 0;
-                for(int i = 0; i < 3; i++){
-                    for(int j = 0; j < 3; j++){
-                        box[idx++] = vars[boxRow * 3 + i][boxCol * 3 + j];
-                    }
-                }
-                model.allDifferent(box).post();
-            }
-        }
-    }
-
-
-    /**cree le model specifique au sudoku*/
-    static Model createModel(){
-        Model model = new Model("sudoku");
-        createConstraints(model);
-        return model;
-    }
 
 
     public static void main(String[] args) {
