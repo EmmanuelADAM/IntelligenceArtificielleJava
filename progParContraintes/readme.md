@@ -38,7 +38,7 @@ Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/Inte
 
 ---
 
-### Problème d'affectation de rôles  du voyageur de commerce (TSP : Traveling Salesman Problem)
+### Problème d'affectation de rôles  
 
 Le contrôle d’accès basé sur les rôles (**RBAC**) est un modèle d'autorisation permettant de contrôler l'accès des utilisateurs aux systèmes, aux applications et aux données en fonction de leurs rôles.
 
