@@ -20,4 +20,4 @@ Voici un exemple de puzzle :
 ![TecToNic Example](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/TecToNic.jpg)
 issue du site [villemin.gerard.free.fr/aJeux](http://villemin.gerard.free.fr/aJeux/Tectonic.htm)
 
-Le code TecToNic en ChocoSolver est disponible [ici](./src/main/java/progParContraintes/tectonic/TecToNic.java) permet de resoudre ce type de puzzle.
+Le code TecToNic en ChocoSolver est disponible [ici](./progParContraintes/tectonic/TecToNic.java) permet de resoudre ce type de puzzle.
