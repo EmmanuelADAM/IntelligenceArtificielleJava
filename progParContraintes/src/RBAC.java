@@ -68,12 +68,13 @@ public class RBAC {
                     // On utilise une somme pondérée : sum(hasRole[u][r] * rolePermissions[r][p]) >= 1
                     IntVar sumRolesForPerm = model.intVar("u" + u + "_p" + p, 0, nbRoles);
 
-                    int[] coefficients = new int[nbRoles];
+                    //roles that offer permission p
+                    int[] rolesOfferP = new int[nbRoles];
                     for (int r = 0; r < nbRoles; r++) {
-                        coefficients[r] = rolePermissions[r][p];
+                        rolesOfferP[r] = rolePermissions[r][p];
                     }
-
-                    model.scalar(hasRole[u], coefficients, "=", sumRolesForPerm).post();
+                    //hasRole[u]  = affectation des rôles pour l'utilisateur u
+                    model.scalar(hasRole[u], rolesOfferP, "=", sumRolesForPerm).post();
                     model.arithm(sumRolesForPerm, ">=", 1).post();
                 }
             }
