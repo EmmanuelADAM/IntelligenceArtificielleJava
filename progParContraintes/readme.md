@@ -18,13 +18,13 @@ Résolution du puzzle des n reines avec ChocoSolver.
 - différentes stratégies  de recherche sont proposées.
 
 ♛⬜⬛⬜⬛⬜⬛⬜ <br>
-⬜⬛⬜⬛♛⬛⬜⬛
-⬛⬜⬛⬜⬛⬜⬛♛
-⬜⬛⬜⬛⬜♛⬜⬛
-⬛⬜♛⬜⬛⬜⬛⬜
-⬜⬛⬜⬛⬜⬛♛⬛
-⬛♛⬛⬜⬛⬜⬛⬜
-⬜⬛⬜♛⬜⬛⬜⬛
+⬜⬛⬜⬛♛⬛⬜⬛ <br>
+⬛⬜⬛⬜⬛⬜⬛♛ <br>
+⬜⬛⬜⬛⬜♛⬜⬛ <br>
+⬛⬜♛⬜⬛⬜⬛⬜ <br>
+⬜⬛⬜⬛⬜⬛♛⬛ <br>
+⬛♛⬛⬜⬛⬜⬛⬜ <br>
+⬜⬛⬜♛⬜⬛⬜⬛ <br>
 
 Le code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java) permet de resoudre ce type de puzzle.
 
