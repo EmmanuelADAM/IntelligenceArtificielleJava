@@ -17,7 +17,7 @@ Résolution du puzzle TecToNic avec ChocoSolver .
   3. Deux cellules adjacentes (horizontalement ou verticalement) ne peuvent pas contenir la même valeur.
 
 Voici un exemple de puzzle :  
-![TecToNic Example](./tectonic.jpg)
+![TecToNic Example](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/TecToNic.jpg)
 issue du site [villemin.gerard.free.fr/aJeux](http://villemin.gerard.free.fr/aJeux/Tectonic.htm)
 
 Le code TecToNic en ChocoSolver est disponible [ici](./src/main/java/progParContraintes/tectonic/TecToNic.java) permet de resoudre ce type de puzzle.
