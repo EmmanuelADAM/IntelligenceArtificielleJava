@@ -14,8 +14,8 @@ Résolution du puzzle des n reines avec ChocoSolver.
 - Placer n reines sur un échiquier de taille n x n de telle sorte qu'aucune reine ne puisse en attaquer une autre.
 
 **Particularités :**
-- utilisation de contraintes arithmétiques, de allDifferents
-- différentes stratégies  de recherche sont proposées.
+ - utilisation de contraintes arithmétiques, de allDifferents
+ - différentes stratégies  de recherche sont proposées.
 
 ♛⬜⬛⬜⬛⬜⬛⬜ <br>
 ⬜⬛⬜⬛♛⬛⬜⬛ <br>
@@ -58,7 +58,8 @@ Voici un exemple de puzzle :
 ![TecToNic Example](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/TecToNic.jpg)
 issue du site [villemin.gerard.free.fr/aJeux](http://villemin.gerard.free.fr/aJeux/Tectonic.htm)
 
-**Particularités** : utilisation de allDifferent, inégalités.
+**Particularités :** 
+  - utilisation de allDifferents, inégalités.
 
 Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/TecToNic.java) pour resoudre ce type de puzzle.
 
@@ -67,7 +68,7 @@ Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/Emmanuel
 ### Problème classique du voyageur de commerce (TSP : Traveling Salesman Problem)
 Un grand classique :  exercice simple sur le problème de voyageur de commerce : construire le chemin hamiltonien (chemin qui passe 1 fois et 1 seule par tous les sommets du graphe) de longueur minimale.
 
-Particularité : 
+**Particularités :** 
  - utilisation de contraintes de type circuit.
  - accès à un élément d'une matrice à partir d'indices de type variables contraintes.
  - somme des éléments d'un tableau de variables contraintes.
@@ -100,7 +101,7 @@ Chaque utilisateur a besoin d’un ensemble minimal de permissions pour ses tâc
 
 On ajoute que personne ne peut posséder les rôles $r_0$ et $r_2$ en même temps (conflit de rôles).
 
-Particularité :
+**Particularités :**
  - utilisation de variables "booléennes" (en fait entiers entre 0 et 1).
  - utilisation d'une matrice de variables contraintes.
  - produit scalaire entre une ligne de la matrice et un vecteur.
@@ -119,7 +120,7 @@ Générateur de clés sécurisées utilisant la programmation par contraintes av
   - Pas de caractères répétitifs consécutifs
   - Pas de séquences ou motifs interdits
 
-Particularité :
+**Particularités :**
   - utilisation de recherche d'une variable contrainte dans un ensemble.
   - utilisation de ifThenElse pour modéliser des contraintes conditionnelles.
   - exemple d'utilisation de la reification 
