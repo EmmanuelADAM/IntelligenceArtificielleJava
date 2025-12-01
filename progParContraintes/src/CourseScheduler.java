@@ -51,10 +51,10 @@ public class CourseScheduler {
         for (int i = 0; i < numCourses; i++) {
             for (int j = i + 1; j < numCourses; j++) {
                 // If courses i and j are at the same time slot, they must be in different rooms
-                // Equivalent to: not (same time slot and same room)
+                // Equivalent to: not being at the  time slot and in the same room
                 // not ( (courseTimeSlots[i] = courseTimeSlots[j]) and (courseRooms[i] = courseRooms[j]) )
                 // which is the same as, because of De Morgan's laws not (A and B) <=> not A or not B
-                // not courseTimeSlots[i] = courseTimeSlots[j]  or  not courseRooms[i] != courseRooms[j]
+                // not courseTimeSlots[i] != courseTimeSlots[j]  or  not courseRooms[i] != courseRooms[j]
                 model.or(model.arithm(courseTimeSlots[i], "!=", courseTimeSlots[j]),
                          model.arithm(courseRooms[i], "!=", courseRooms[j])).post();
             }
@@ -95,7 +95,8 @@ public class CourseScheduler {
         model.arithm(courseTeachers[Courses.Chemistry.ordinal()], "!=", Profs.Lagaffe.ordinal()).post();
 
 
-        // 4. Room capacity constraints (example: Physics and Chemistry courses can only be hosted in room B )
+        // 4. Room capacity constraints.
+        // Physics and Chemistry courses can only be hosted in room B
         // and Room B can only host Physics and Chemistry courses
         model.arithm(courseRooms[Courses.Physics.ordinal()], "=", Rooms.B.ordinal()).post();
         model.arithm(courseRooms[Courses.Chemistry.ordinal()], "=", Rooms.B.ordinal()).post();
@@ -103,7 +104,6 @@ public class CourseScheduler {
         model.arithm(courseRooms[Courses.Biology.ordinal()], "!=", Rooms.B.ordinal()).post();
         model.arithm(courseRooms[Courses.History.ordinal()], "!=", Rooms.B.ordinal()).post();
 
-        // Solve the model
         model.getSolver().printShortStatistics();
 
         // Find solution
@@ -111,7 +111,6 @@ public class CourseScheduler {
             // Print solution
             System.out.println("Solution found!");
             System.out.println(model.getSolver().getSolutionCount() + " solution(s) found.");
-            // Display all the solutions
             for (int i = 0; i < numCourses; i++) {
                 System.out.printf("Course %s: Room %s, Time Slot %s, Teacher %s\n",
                         Courses.values()[i],
@@ -119,8 +118,6 @@ public class CourseScheduler {
                         Slots.values()[courseTimeSlots[i].getValue()],
                         Profs.values()[courseTeachers[i].getValue()]);
             }
-
-
         }
         else {
             System.out.println("No solution found.");
