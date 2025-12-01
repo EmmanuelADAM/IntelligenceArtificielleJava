@@ -102,7 +102,7 @@ Affecter des cours à des créneaux horaires, des salles et des professeurs en r
   - Les cours de Physique et de Chimie ne peuvent avoir lieu qu’en salle B en raison des équipements nécessaires.
   - La salle B ne peut accueillir que des cours de Physique ou de Chimie.
 
-- Objectif : Donner une solution en respectant toutes les contraintes.
+- ![Blue]Objectif : Donner une solution en respectant toutes les contraintes. 
 
 **Particularités :**
   - identifier les variables et leurs domaines.
