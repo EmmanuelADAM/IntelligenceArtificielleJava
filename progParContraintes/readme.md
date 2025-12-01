@@ -67,17 +67,7 @@ Résolution du puzzle TecToNic avec ChocoSolver .
   3. Deux cellules adjacentes (horizontalement ou verticalement) ne peuvent pas contenir la même valeur.
 
 Voici un exemple de puzzle :  
-<span style="background:lightgrey"> 2 </span><span style="background:lightgrey"> 1 </span><span style="background:lightgrey"> 3 </span><span style="background:blue"> 1 </span><span style="background:blue"> 5 </span><br>
-<span style="background:red"> 3 </span><span style="background:lightgrey"> 4 </span><span style="background:cyan"> 2 </span><span style="background:blue"> 4 </span><span style="background:blue"> 3 </span><br>
-<span style="background:red"> 1 </span><span style="background:red"> 5 </span><span style="background:cyan"> 1 </span><span style="background:cyan"> 5 </span><span style="background:blue"> 2 </span><br>
-<span style="background:red"> 4 </span><span style="background:red"> 2 </span><span style="background:cyan"> 3 </span><span style="background:cyan"> 4 </span><span style="background:orange"> 3 </span><br>
-<span style="background:yellow"> 1 </span><span style="background:yellow"> 5 </span><span style="background:orange"> 1 </span><span style="background:orange"> 5 </span><span style="background:orange"> 2 </span><br>
-<span style="background:purple"> 2 </span><span style="background:yellow"> 4 </span><span style="background:yellow"> 2 </span><span style="background:yellow"> 3 </span><span style="background:orange"> 4 </span><br>
-<span style="background:purple"> 1 </span><span style="background:lightgrey"> 5 </span><span style="background:blue"> 1 </span><span style="background:blue"> 5 </span><span style="background:blue"> 2 </span><br>
-<span style="background:lightgrey"> 3 </span><span style="background:lightgrey"> 2 </span><span style="background:blue"> 3 </span><span style="background:blue"> 4 </span><span style="background:red"> 3 </span><br>
-<span style="background:lightgrey"> 1 </span><span style="background:lightgrey"> 4 </span><span style="background:red"> 1 </span><span style="background:red"> 5 </span><span style="background:red"> 2 </span><br>
-<span style="background:cyan"> 2 </span><span style="background:cyan"> 3 </span><span style="background:orange"> 2 </span><span style="background:orange"> 3 </span><span style="background:red"> 4 </span><br>
-<span style="background:cyan"> 1 </span><span style="background:orange"> 4 </span><span style="background:orange"> 1 </span><span style="background:orange"> 5 </span><span style="background:yellow"> 1 </span>
+<img src="./TecToNic.png" alt="TecToNic" width="200"/>
 
 **Particularités :** 
   - utilisation de allDifferents, inégalités.
@@ -102,7 +92,7 @@ Affecter des cours à des créneaux horaires, des salles et des professeurs en r
   - Les cours de Physique et de Chimie ne peuvent avoir lieu qu’en salle B en raison des équipements nécessaires.
   - La salle B ne peut accueillir que des cours de Physique ou de Chimie.
 
-- ![Blue]Objectif : Donner une solution en respectant toutes les contraintes. 
+- Objectif : Donner une solution en respectant toutes les contraintes.
 
 **Particularités :**
   - identifier les variables et leurs domaines.
