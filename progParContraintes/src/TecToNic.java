@@ -69,7 +69,7 @@ public class TecToNic {
 
         // Contrainte 2 : Dans chaque région, tous les chiffres de 1 à N doivent apparaître exactement une fois
         // N = dimension de la région
-        for (int region = 0; region < 5; region++) {
+        for (int region = 0; region < regionSizes.size(); region++) {
             IntVar[] regionCells = new IntVar[regionSizes.get(region)];
             int k=0;
             for (int i = 0; i < rows; i++) {
@@ -123,15 +123,15 @@ public class TecToNic {
                     // réinitialiser la couleur après chaque impression avec "\033[0m"
                     String color = switch(regions[i][j]%7) {
                         case 0 -> "\033[30m";
-                        case 1 -> "\033[31m";
-                        case 2 -> "\033[32m";
-                        case 3 -> "\033[33m";
-                        case 4 -> "\033[34m";
-                        case 5 -> "\033[35m";
-                        case 6 -> "\033[36m";
+                        case 1 -> "\033[41m";
+                        case 2 -> "\033[42m";
+                        case 3 -> "\033[43m";
+                        case 4 -> "\033[44m";
+                        case 5 -> "\033[45m";
+                        case 6 -> "\033[46m";
                         default -> "?";
                     };
-                    System.out.print(color + grid[i][j].getValue() + "|" + "\033[0m");
+                    System.out.print(color + " " + grid[i][j].getValue()  + " \033[0m");
                 }
                 System.out.println();
             }

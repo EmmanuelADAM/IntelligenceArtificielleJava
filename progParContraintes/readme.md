@@ -15,7 +15,7 @@ Résolution du puzzle des n reines avec ChocoSolver.
 
 **Particularités :**
  - utilisation de contraintes arithmétiques, de allDifferents
- - différentes stratégies  de recherche sont proposées.
+ - différentes stratégies de recherche sont proposées.
 
 ♛⬜⬛⬜⬛⬜⬛⬜ <br>
 ⬜⬛⬜⬛♛⬛⬜⬛ <br>
@@ -26,7 +26,7 @@ Résolution du puzzle des n reines avec ChocoSolver.
 ⬛♛⬛⬜⬛⬜⬛⬜ <br>
 ⬜⬛⬜♛⬜⬛⬜⬛ <br>
 
-Le code des N reines en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java) pour resoudre ce type de puzzle.
+<span style="background:lightgreen">Un code des N reines en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/NQueens.java).</span>
 
 
 ---
@@ -36,12 +36,24 @@ Résolution du puzzle carré magique avec ChocoSolver.
 
 - Dans un carré magique d'ordre n, on place les entiers de 1 à n² de telle sorte que la somme des nombres dans chaque ligne, chaque colonne et les deux diagonales soit la même.
 - Cette somme constante, appelée constante magique, peut être calculée avec la formule : $M = n(n^2 + 1) / 2$.
-
+  - pour un carré de 3x3, la constante magique est 15; pour un carré de 4x4, elle est 34, etc.
+Exemple : 
+<pre style="color:blue">
+- -------------------
+| 16 |  1 |  8 |  9 |
+---------------------
+|  2 |  7 | 10 | 15 |
+---------------------
+| 13 | 12 |  5 |  4 |
+---------------------
+|  3 | 14 | 11 |  6 |
+---------------------
+</pre>
 **Particularités :** 
   - recopie d'une partie de tableau, 
   - somme de valeurs contraintes.
 
-Le code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/MagicSquare.java) pour resoudre ce type de puzzle.
+<span style="background:lightgreen">Un code MagicSquare en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/MagicSquare.java) .</span>
 
 
 ---
@@ -55,13 +67,49 @@ Résolution du puzzle TecToNic avec ChocoSolver .
   3. Deux cellules adjacentes (horizontalement ou verticalement) ne peuvent pas contenir la même valeur.
 
 Voici un exemple de puzzle :  
-![TecToNic Example](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/TecToNic.jpg)
-issue du site [villemin.gerard.free.fr/aJeux](http://villemin.gerard.free.fr/aJeux/Tectonic.htm)
+<span style="background:lightgrey"> 2 </span><span style="background:lightgrey"> 1 </span><span style="background:lightgrey"> 3 </span><span style="background:blue"> 1 </span><span style="background:blue"> 5 </span><br>
+<span style="background:red"> 3 </span><span style="background:lightgrey"> 4 </span><span style="background:cyan"> 2 </span><span style="background:blue"> 4 </span><span style="background:blue"> 3 </span><br>
+<span style="background:red"> 1 </span><span style="background:red"> 5 </span><span style="background:cyan"> 1 </span><span style="background:cyan"> 5 </span><span style="background:blue"> 2 </span><br>
+<span style="background:red"> 4 </span><span style="background:red"> 2 </span><span style="background:cyan"> 3 </span><span style="background:cyan"> 4 </span><span style="background:orange"> 3 </span><br>
+<span style="background:yellow"> 1 </span><span style="background:yellow"> 5 </span><span style="background:orange"> 1 </span><span style="background:orange"> 5 </span><span style="background:orange"> 2 </span><br>
+<span style="background:purple"> 2 </span><span style="background:yellow"> 4 </span><span style="background:yellow"> 2 </span><span style="background:yellow"> 3 </span><span style="background:orange"> 4 </span><br>
+<span style="background:purple"> 1 </span><span style="background:lightgrey"> 5 </span><span style="background:blue"> 1 </span><span style="background:blue"> 5 </span><span style="background:blue"> 2 </span><br>
+<span style="background:lightgrey"> 3 </span><span style="background:lightgrey"> 2 </span><span style="background:blue"> 3 </span><span style="background:blue"> 4 </span><span style="background:red"> 3 </span><br>
+<span style="background:lightgrey"> 1 </span><span style="background:lightgrey"> 4 </span><span style="background:red"> 1 </span><span style="background:red"> 5 </span><span style="background:red"> 2 </span><br>
+<span style="background:cyan"> 2 </span><span style="background:cyan"> 3 </span><span style="background:orange"> 2 </span><span style="background:orange"> 3 </span><span style="background:red"> 4 </span><br>
+<span style="background:cyan"> 1 </span><span style="background:orange"> 4 </span><span style="background:orange"> 1 </span><span style="background:orange"> 5 </span><span style="background:yellow"> 1 </span>
 
 **Particularités :** 
   - utilisation de allDifferents, inégalités.
 
-Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/TecToNic.java) pour resoudre ce type de puzzle.
+<span style="background:lightgreen">Le code TecToNic en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/TecToNic.java) .</span>
+
+---
+
+### Problème de gestion d'emplois du temps
+Affecter des cours à des créneaux horaires, des salles et des professeurs en respectant des contraintes.
+
+- Quatre enseignants (Durand, Dupont, Dupond et Lagaffe) doivent donner des cours dans deux salles différentes (A, B) pendant quatre créneaux horaires (8h-10h, 10h-12h, 14h-16h, 16h-18h).
+- Les matières à enseigner sont les suivantes : Mathématiques, Physique, Chimie, Biologie et Histoire.
+
+- Contraintes :
+  - Dans une salle donnée, à un créneau horaire donné, il ne peut y avoir qu’un seul cours et un seul enseignant.
+  - Un enseignant ne peut donner qu’un seul cours par créneau horaire.
+  - Durand ne peut enseigner que les Mathématiques ou la Physique.
+  - Dupont ne peut enseigner que la Physique ou la Chimie.
+  - Dupond ne peut enseigner que la Chimie ou la Biologie.
+  - Lagaffe ne peut enseigner que la Biologie ou l’Histoire.
+  - Les cours de Physique et de Chimie ne peuvent avoir lieu qu’en salle B en raison des équipements nécessaires.
+  - La salle B ne peut accueillir que des cours de Physique ou de Chimie.
+
+- Objectif : Donner une solution en respectant toutes les contraintes.
+
+**Particularités :**
+  - identifier les variables et leurs domaines.
+  - transcrire les contraintes en expressions ChocoSolver.
+  - aborder le problème sous un angle particulier.
+
+<span style="background:lightgreen">Le code CourseScheduler en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/CourseScheduler.java) .</span>
 
 ---
 
@@ -73,7 +121,7 @@ Un grand classique :  exercice simple sur le problème de voyageur de commerce :
  - accès à un élément d'une matrice à partir d'indices de type variables contraintes.
  - somme des éléments d'un tableau de variables contraintes.
 
-Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/VRPChoco.java) pour resoudre ce type de problème.
+<span style="background:lightgreen">Un code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/VRPChoco.java).</span>
 
 ---
 
@@ -106,7 +154,7 @@ On ajoute que personne ne peut posséder les rôles $r_0$ et $r_2$ en même temp
  - utilisation d'une matrice de variables contraintes.
  - produit scalaire entre une ligne de la matrice et un vecteur.
 
-Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/RBAC.java)  pour resoudre ce type de problème.
+<span style="background:lightgreen">Un code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/RBAC.java) .</span>
 
 ---
 
@@ -126,4 +174,6 @@ Générateur de clés sécurisées utilisant la programmation par contraintes av
   - exemple d'utilisation de la reification 
   - recherche aléatoire de solutions.
 
-Le code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/KeyGen.java)  pour resoudre ce type de problème.
+<span style="background:lightgreen">Un code en ChocoSolver est disponible [ici](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/src/KeyGen.java).</span>
+
+---
