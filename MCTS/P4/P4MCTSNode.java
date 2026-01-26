@@ -42,9 +42,9 @@ public class P4MCTSNode {
     /**ligne  = no de ligne jouée dans le noeud */
     private  int ligne= 0;
     /**ligne faite par IA*/
-    private static int[] ligneAI = {1,1,1,1};
+    private static final int[] ligneAI = {1,1,1,1};
     /**ligne faite par Humain*/
-    private static int[] ligneHumain = {2,2,2,2};
+    private static final int[] ligneHumain = {2,2,2,2};
     /**valeur pour perte de match*/
     private static int PERTE = -10;
 
@@ -125,7 +125,7 @@ public class P4MCTSNode {
             if(child.nbVisites==0) value = r.nextDouble() + Math.sqrt(Math.log(nbVisites+1)) * c;
             else value =
                     child.sommeGains / child.nbVisites +
-                            (Math.pow(nbVisites+1, 1/arity) / child.nbVisites);
+                            (Math.pow(nbVisites+1, (double) 1 /arity) / child.nbVisites);
             if (value >= bestValue) {
                 selectedNode = child;
                 bestValue = value;
@@ -152,24 +152,9 @@ public class P4MCTSNode {
         {
             for(int i=0; i<=2 && !gain; i++)
                 for(int j=0; j<7; j++)
-                gain = gain || (grille[i][j]==coef && grille[i+1][j]==coef && grille[i+2][j]==coef && grille[i+3][j]==coef);
+                    gain = gain || (grille[i][j]==coef && grille[i+1][j]==coef && grille[i+2][j]==coef && grille[i+3][j]==coef);
         }
         //TODO:test diagonales
-        int posLigne=5;
-        while (posLigne>=0 && grille[posLigne][action]==0) posLigne--;
-        //diagonale montante
-        var token = grille[posLigne][action];
-        var colGauche = max(0, action-3);
-        var ligGauche = max(0, posLigne-3);
-        var gauche = min(colGauche, ligGauche);
-        var colDroite = min(6, action+3);
-        var ligDroite= min(5, posLigne+3);
-        var droite = min(colDroite, ligDroite);
-        var ligneHaut = min(0, posLigne+3);
-        int decalGauche= min(0, action-3);
-        int decalDroit= min(0, action+3);
-        int i = decalGauche;
-        boolean aligne = true;
 
         return gain;
     }
@@ -285,7 +270,7 @@ public class P4MCTSNode {
             sb.append("\t+");
             for (int e : grille[i])
                 if(e>0)sb.append(e);else sb.append('_');
-                sb.append("+");
+            sb.append("+");
             sb.append("\n");
         }
         sb.append("valeur=").append(sommeGains).append(" / ").append(nbVisites).append(" visites");

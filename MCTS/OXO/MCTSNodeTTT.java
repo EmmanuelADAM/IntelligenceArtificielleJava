@@ -106,6 +106,11 @@ public class MCTSNodeTTT {
     MCTSNodeTTT() {
     }
 
+    /** constructor that defines the parameter ia*/
+    MCTSNodeTTT(boolean _ia) {
+        ia = _ia;
+    }
+
 
     /**constructeur
      * @param _nbActions nb d'actions realisables a partir de ce noeud
@@ -136,8 +141,10 @@ public class MCTSNodeTTT {
             //en choisir un au hasard
             newNode = newNode.select();
         }
-        // jouer une partie jusqu'au bout
-        rollOut(newNode);
+
+
+        // jouer une partie jusqu'au bout s'il reste encore une action possible
+        if (newNode!=null) rollOut(newNode);
     }
 
 

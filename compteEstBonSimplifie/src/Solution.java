@@ -21,7 +21,7 @@ class Solution
    /** hasard */
    Random hasard;
 
-   /** enchainement des etapes sous forme de chaien de caracteres */
+   /** enchainement des etapes sous forme de chaine de caracteres */
    StringBuilder etapes;
 
    // constantes pour optimiser la création de la chaine des étapes
@@ -59,8 +59,7 @@ class Solution
    void reinit()
    {
       valeursLibres.clear();
-      for (int nb : nombres)
-         valeursLibres.add(nb);
+      valeursLibres.addAll(Arrays.asList(nombres));
       etapes.delete(0, etapes.length());
    }
 
@@ -174,23 +173,25 @@ class Solution
    /** fonction principale, lance la resolution */
    public static void main(String[] args)
    {
-      int but = 495;
-      Integer[] tab = new Integer[] { 75, 8, 4, 8, 1, 7 };
+      int but = 2025;
+//      Integer[] tab = new Integer[] { 1, 2, 6, 7, 25, 5 };
+      Integer[] tab = new Integer[]{100, 2, 75, 3, 1, 10};
 
       System.out.print("trouver " + but + ", avec : ");
       for (int v : tab)
          System.out.print(v + " ; ");
       System.out.println();
 
-      System.out.println("tente de trouver 5 solutions : ");
+      int nbThreads = 4;
+      System.out.printf("tente de trouver des solutions à partir de %d tests en parallèle : \n", nbThreads);
       System.out.println("---------------------------------");
 
       long debut = System.currentTimeMillis();
       ThreadGroup groupe = new ThreadGroup("calcul");
-      for (int i = 0; i < 5; i++)
+      for (int i = 0; i < nbThreads; i++)
       {
          new Thread(groupe, () -> {
-            String strSol = testDesSols(tab, but, 5000);
+            String strSol = testDesSols(tab, but, 10000);
             if (strSol != null)
             {
                int pos = strSol.lastIndexOf(";");
@@ -200,11 +201,11 @@ class Solution
             }
          }).start();
       }
-      while (groupe.activeCount() == 5)
+      while (groupe.activeCount() == nbThreads)
          Thread.yield();
       groupe.interrupt();
       long fin = System.currentTimeMillis();
-      double duree = (fin - debut) / 1000d;
+      double duree = (fin - debut) ;
       System.out.println("duree pour la 1ere solution = " + duree + " ms");
    }
 

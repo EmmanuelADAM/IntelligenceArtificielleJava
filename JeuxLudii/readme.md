@@ -53,7 +53,7 @@ Ce développement est réalisé à l'aide de l'application [Ludii](https://ludii
   - ajoutez la librairie ludiixxxx.jar que vous avez téléchargée à votre projet.
 
 Parmi les codes de cette page : 
-  - [MonAgentLudique](./MonAgentLudique.java) est une "IA" qui choisit ses actions au hasard
+  - [MyDummyAI](./MonAgentLudique.java) est une "IA" qui choisit ses actions au hasard
   - [UCTSoemers](./UCTSoemers.java) est un exemple d'IA utilisant l'algorithme UCT. Code proposé par D.Soemers, auquel des commentaires ont été ajoutés.<br>
   Il y a plusieurs façons de réaliser un UCT, ceci est une version qui est légèrement différente de celle classiquement présentée.
   - [TestLudii](./TestLudii.java) est la classe principale, elle lance l'application Ludii en ajoutant les IA ci-dessus.

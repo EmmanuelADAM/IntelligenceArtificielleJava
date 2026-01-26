@@ -131,7 +131,7 @@ public class Situation {
     private int dangerValue(int[] lineDiagonal, int playerValue) {
         int result = 0;
         int danger1, danger2, danger3, danger4;
-        int possibleDanger1, possibleDanger2, possibleDanger3, possibleDanger4;
+        int possibleDanger1, possibleDanger2, possibleDanger3, possibleDanger4, possibleDanger5;
 
         if (playerValue == 1) {
             danger1 = Situation.findSubArray(lineDiagonal, DangerPattern.DANGER1_1.getPattern());
@@ -145,27 +145,30 @@ public class Situation {
             danger4 = Situation.findSubArray(lineDiagonal, DangerPattern.DANGER2_4.getPattern());
         }
 
-        if (danger1 != -1) result = 1000;
-        if (danger2 != -1) result = 1000;
-        if (danger3 != -1) result = 1000;
-        if (danger4 != -1) result = 1000;
+        if (danger1 != -1) result += 300;
+        if (danger2 != -1) result += 300;
+        if (danger3 != -1) result += 300;
+        if (danger4 != -1) result += 300;
 
         if (playerValue == 1) {
             possibleDanger1 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER1_1.getPattern());
             possibleDanger2 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER1_2.getPattern());
             possibleDanger3 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER1_3.getPattern());
             possibleDanger4 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER1_4.getPattern());
+            possibleDanger5 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER1_5.getPattern());
         } else {
             possibleDanger1 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER2_1.getPattern());
             possibleDanger2 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER2_2.getPattern());
             possibleDanger3 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER2_3.getPattern());
             possibleDanger4 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER2_4.getPattern());
+            possibleDanger5 = Situation.findSubArray(lineDiagonal, DangerPattern.POSSIBLE_DANGER2_5.getPattern());
         }
 
         if (possibleDanger1 != -1) result += 50;
         if (possibleDanger2 != -1) result += 50;
         if (possibleDanger3 != -1) result += 50;
         if (possibleDanger4 != -1) result += 50;
+        if (possibleDanger5 != -1) result += 50;
 
         return result;
     }

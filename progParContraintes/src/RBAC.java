@@ -49,7 +49,7 @@ public class RBAC {
         BoolVar[][] hasRole = new BoolVar[nbUsers][nbRoles];
         for (int u = 0; u < nbUsers; u++) {
             for (int r = 0; r < nbRoles; r++) {
-                hasRole[u][r] = model.boolVar("user_" + u + "_role_" + r);
+                hasRole[u][r] = model.boolVar("attrib_u" + u + "_role_" + r);
             }
         }
 
@@ -66,14 +66,17 @@ public class RBAC {
 
                     // Créer une contrainte : au moins un des rôles qui donnent 'p' doit être attribué
                     // On utilise une somme pondérée : sum(hasRole[u][r] * rolePermissions[r][p]) >= 1
-                    IntVar sumRolesForPerm = model.intVar("u" + u + "_p" + p, 0, nbRoles);
+                    IntVar sumRolesForPerm = model.intVar("nbroles_de_u" + u + "_pour_p" + p, 0, nbRoles);
 
-                    //roles that offer permission p
+                    //roles that offer permission p rolesOfferP[0] = 1 if r0 offers p, etc.
                     int[] rolesOfferP = new int[nbRoles];
                     for (int r = 0; r < nbRoles; r++) {
                         rolesOfferP[r] = rolePermissions[r][p];
                     }
+                    //
                     //hasRole[u]  = affectation des rôles pour l'utilisateur u
+                    //produit scalaire entre hasRole[u] et rolesOfferP
+                    //exemple : hasRole[u] = [1,0,1] et rolesOfferP = [0,1,1] => 1*0 + 0*1 + 1*1 = 1 -> 1 seul rôle offre la permission p
                     model.scalar(hasRole[u], rolesOfferP, "=", sumRolesForPerm).post();
                     model.arithm(sumRolesForPerm, ">=", 1).post();
                 }

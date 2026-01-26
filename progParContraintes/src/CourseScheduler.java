@@ -3,7 +3,7 @@ import org.chocosolver.solver.variables.IntVar;
 
 /**
  * Course Scheduling Problem
- * Constrant Programming example using Choco Solver
+ * Constraint Programming example using Choco Solver
  *
  * Four teachers (Durand, Dupont, Dupond, and Lagaffe) must teach in two different rooms (A, B) during four possible time slots (8:00-10:00, 10:00-12:00, 14:00-16:00, and 16:00-18:00).
  * The subjects are Math, Physics, Chemistry, Biology, and History.
@@ -105,6 +105,7 @@ public class CourseScheduler {
         model.arithm(courseRooms[Courses.History.ordinal()], "!=", Rooms.B.ordinal()).post();
 
         model.getSolver().printShortStatistics();
+
 
         // Find solution
         if (model.getSolver().solve()) {

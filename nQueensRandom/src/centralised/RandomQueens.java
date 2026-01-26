@@ -123,9 +123,7 @@ class RandomQueens {
      * @return the max of a tab
      */
     private int max(int[] tab) {
-        int max = tab[0];
-        for (int v : tab) if (v > max) max = v;
-        return max;
+    return Arrays.stream(tab).max().orElse(Integer.MIN_VALUE);
     }
 
     /**
@@ -203,31 +201,32 @@ class RandomQueens {
         }
         // some lines to compute the time spent, the memory used,
         long timeB = System.currentTimeMillis();
-        if (sum==0) System.out.println(Thread.currentThread().getName()+" solution found in " + (timeB - timeA) + " ms for " + nb + " queens..");
-        else System.out.println(Thread.currentThread().getName()+" no solution after  " + (nbMoves) + " moves..");
+        if (sum==0)
+            System.out.printf("%s: solution found in %d ms for %d queens..\n", Thread.currentThread().getName(), (timeB - timeA) , nb);
+        else System.out.printf("%s: no solution after  %d moves..\n", Thread.currentThread().getName(), (nbMoves));
         times.add((int) (timeB - timeA));
         // just before the print, we reallocate the nb of conflict artificially decreased
         if (movedQueen >= 0) conflicts[movedQueen]++;
-        System.out.println(Thread.currentThread().getName()+" nb of conflicts=" + sumConflicts() + ",  nb of moves= " + nbMoves);
+        System.out.printf("%s: nb of conflicts=%d,  nb of moves= %d ..\n", Thread.currentThread().getName(), sumConflicts() , nbMoves);
         moves.add(nbMoves);
-        System.out.println(Thread.currentThread().getName()+" here is the current state : ");
-        System.out.println(Thread.currentThread().getName()+" " +this);
+        System.out.println(Thread.currentThread().getName()+": here is the current state : ");
+        System.out.println(Thread.currentThread().getName()+":\n\t" +this);
+        //desactivate the current thread
+        Thread.currentThread().interrupt();
     }
 
     /**
      * return the sum of conflicts
      */
     private int sumConflicts() {
-        int sum = 0;
-        for (int c : conflicts) sum += c;
-        return sum;
+    return Arrays.stream(conflicts).sum();
     }
 
     /**
      * return the chessboard, the pos of the queens and theirs conflicts
      */
     public String toString() {
-        StringBuilder sb = new StringBuilder("q"+no+":");
+        StringBuilder sb = new StringBuilder();
         /*just to gain some time when printing*/
         String coma = ",";
 
@@ -261,14 +260,15 @@ class RandomQueens {
     public static void main(String[] args) {
         RandomQueens.nb = 1000;
         RandomQueens.verboseLevel = 0;
-        int nbTests = 5;
+        int nbTests = 4;
         var cheffes = new ThreadGroup("course");
         for (int i = 0; i < nbTests; i++) {
             RandomQueens rq = new RandomQueens(nb);
             Thread queenProcess = new Thread(cheffes, rq::go, "test-"+i);
             queenProcess.start();
         }
-        while(cheffes.activeCount()!=0) Thread.yield();
+        while (cheffes.activeCount()!=0)Thread.yield();
+
         IntStream isTime = RandomQueens.times.stream().mapToInt(Integer::intValue);
         IntStream isMoves = RandomQueens.moves.stream().mapToInt(Integer::intValue);
         System.out.println("pour " + nb + " reines, sur " + nbTests + " tests,");

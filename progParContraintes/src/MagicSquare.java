@@ -119,6 +119,6 @@ public class MagicSquare {
      * */
     public static void main(String[] args) {
 
-        resolveSquare(6, true);
+        resolveSquare(4, true);
     }
 }

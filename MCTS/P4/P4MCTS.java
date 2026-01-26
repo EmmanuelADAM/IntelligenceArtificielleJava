@@ -9,8 +9,7 @@ public class P4MCTS {
 
     static int[][]getMatriceJeu()
     {
-        int[][] grille = (myNode==null?null:myNode.getGrille());
-        return grille;
+        return (myNode==null?null:myNode.getGrille());
     }
 
     static void init()

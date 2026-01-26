@@ -7,23 +7,34 @@ import java.util.Scanner;
  * @author emmanueladam
  * */
 public class TicTacToeMCTS {
-    /**nb de jeux a jouer au debut et entre chaque coups de la personne*/
+    /**nb de jeux à jouer au debut et entre chaque coup de la personne*/
     static int nbGames = 500;
     public static void main(String[] args) {
-        var startNode = new MCTSNodeTTT();
+        var startNode = new MCTSNodeTTT(true);
+        startNode.expand();
+
+
+        System.out.println(startNode);
+        Scanner sc = new Scanner(System.in);
+        var mynode = startNode;
+        var choix = -1;
+        System.out.println("Votre choix ? (0 pour case(0,0), 1 pour case(1,0), 8 pour case (2,2) : ");
+        choix = sc.nextInt();
+
+        mynode = startNode.findChild(choix);
+        System.out.println(mynode);
+
 
         long starTime = System.currentTimeMillis();
         for (int i=0; i<nbGames; i++) {
-            startNode.selectAction();
+            mynode.selectAction();
         }
-        System.out.println(nbGames + " parties jouees en " + (System.currentTimeMillis() - starTime) + " ms");
-        System.out.println(startNode);
+        System.out.println(nbGames + " parties jouées en " + (System.currentTimeMillis() - starTime) + " ms");
+        System.out.println(mynode);
         System.out.println("Je commence..");
         System.out.println("----------");
 
-        Scanner sc = new Scanner(System.in);
         var fin = false;
-        var mynode = startNode;
         var iaGagne = false;
         var humainGagne = false;
         while (!fin)
@@ -43,7 +54,7 @@ public class TicTacToeMCTS {
             fin = iaGagne = mynode.isWinner(MCTSNodeTTT.valeurLigneIA);
             fin = fin || mynode.getNbActions()==0;
             if(!fin) {
-                var choix = -1;
+                 choix = -1;
                 while(choix==-1)
                 {
                     System.out.println("Votre choix ? (0 pour case(0,0), 1 pour case(1,0), 8 pour case (2,2) : ");
