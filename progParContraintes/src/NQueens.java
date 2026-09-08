@@ -3,6 +3,7 @@ import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.search.limits.FailCounter;
 import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.restart.LubyCutoff;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
 import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
 import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
@@ -92,7 +93,7 @@ public class NQueens {
     /**résolution du problème des n reines
      * ecriture classique mais avec une stratégie de recherche personnalisée
      * */
-    static int[] nQueens_4(int n)
+    static int[] nQueens_3(int n)
     {
         Model model = new Model("probleme des "+ n + " reines");
         IntVar[] colonnes = model.intVarArray("reine_", n, 1, n, true);
@@ -108,14 +109,15 @@ public class NQueens {
 
         Solver s = model.getSolver();
         s.setSearch(Search.intVarSearch(
-        //selectionner la variable avec le plus petit domaine
+                //selectionner la variable avec le plus petit domaine
                 new FirstFail(model),
-        //selectionner la valeur à assigner parmi la plus petite du domaine
+                //selectionner la valeur à assigner parmi la plus petite du domaine
                 new IntDomainMin(),
-        //les  variables
+                //les  variables
                 colonnes));
 
         Solution solution = model.getSolver().findSolution();
+        model.getSolver().printStatistics();
 
         if(solution != null){
             int[] res = new int[n];
@@ -132,83 +134,70 @@ public class NQueens {
     }
 
 
-    /**résolution du problème des n reines par recherche locale aléatoire
-     * configuration du mode de sélection de variables et du mode de recherche*/
-    static int[] nQueens_LocalSearch(int n) {
-        Model model = new Model("probleme des " + n + " reines - Local Search");
 
-        // Variables : position de la reine sur chaque ligne
-        IntVar[] colonnes = model.intVarArray("reine_", n, 0, n-1, false);
+    /**résolution du problème des n reines pour de grandes valeurs de n (500, 1000, ...)
+     *
+     * une recherche COMPLÈTE (backtracking + propagation) mais RANDOMISÉE,
+     *  tant sur le choix des variables que de leurs valeurs,
+     *  et couplée avec des redémarrages selon la loi de Luby :
+     *  chaque restart explore alors une branche différente de
+     *  l'arbre de recherche, ce qui permet d'éviter de rester bloqué dans un sous-arbre sans
+     *    solution.
+     *    La relance du backtrack est de plus en plus patiente.. ce qui permttra d'explorer des sous-arbres plus profonds,
+     *    et au pire de balayer tout l'arbre de recherche
+     *
+     * @param n nombre de reines (testé jusqu'à 1000, ok en quelques secondes)
+     * @param seed graine du générateur aléatoire utilisé pour le choix des variables/valeurs
+     */
+    static int[] nQueens_grandeTaille(int n, long seed) {
+        Model model = new Model("probleme des " + n + " reines - grande taille");
 
-        // Contraintes
-        for(int i = 0; i < n-1; i++){
-            for(int j = i + 1; j < n; j++){
-                // Pas sur la même colonne
-                colonnes[i].ne(colonnes[j]).post();
-                // Pas sur la même diagonale descendante
-                colonnes[i].ne(colonnes[j].sub(j - i)).post();
-                // Pas sur la même diagonale montante
-                colonnes[i].ne(colonnes[j].add(j - i)).post();
-            }
+        // domaine borné (intervalle [0, n-1]) : indispensable en mémoire/temps pour n grand
+        IntVar[] colonnes = model.intVarArray("reine_", n, 0, n - 1, true);
+        IntVar[] diagMontantes = new IntVar[n];
+        IntVar[] diagDescendantes = new IntVar[n];
+        for (int i = 0; i < n; i++) {
+            diagMontantes[i] = colonnes[i].add(i).intVar();
+            diagDescendantes[i] = colonnes[i].sub(i).intVar();
         }
-
+        model.post(
+                model.allDifferent(colonnes, "BC"),
+                model.allDifferent(diagMontantes, "BC"),
+                model.allDifferent(diagDescendantes, "BC")
+        );
         System.out.println("nb contraintes = " + model.getCstrs().length);
 
-        // Configuration de la recherche locale
-        Random random = new Random(0);
+        Solver solver = model.getSolver();
+        // variable ET valeur choisies au hasard : c'est ce qui rend les restarts réellement utiles
+        solver.setSearch(Search.randomSearch(colonnes, seed));
 
-        // 1. Générer une solution initiale (aléatoire)
-        int[] initialSolution = new int[n];
-        for(int i = 0; i < n; i++) {
-            initialSolution[i] = random.nextInt(n);
-        }
-
-        // Créer la solution initiale dans Choco
-        Solution startSolution = new Solution(model);
-        for(int i = 0; i < n; i++) {
-            startSolution.setIntVal(colonnes[i], initialSolution[i]);
-        }
-
-        // 2. Configurer le solver pour la recherche locale
-        // Utiliser une stratégie de recherche basée sur la variable avec le plus petit domaine (First Fail)
-        // et la valeur minimale dans le domaine
-        model.getSolver().setSearch(
-                org.chocosolver.solver.search.strategy.Search.intVarSearch(
-                        new org.chocosolver.solver.search.strategy.selectors.variables.FirstFail(model),
-                        new org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin(),
-                        colonnes
-                )
-        );
-
-        // 3. Utiliser Large Neighborhood Search (LNS)
-        // Ici, on utilise une stratégie de voisinage guidée par la propagation
-        // qui sélectionne environ n/3 variables à re-assigner à chaque itération de LNS
-        model.getSolver().setLNS(
-                new org.chocosolver.solver.search.loop.lns.neighbors.PropagationGuidedNeighborhood(
-                        colonnes, n/3, n, 0
-                )
-        );
-        // Limiter le nombre d'échecs pour relancer la recherche
-        model.getSolver().setRestarts(
+        // redémarrages en loi de Luby : grâce au hasard ci-dessus, chaque restart tente une branche différente
+        //la faillilimit de 100 signifie que si 100 backtracks sont effectués sans trouver de solution, on redémarre
+        // LubyCutoff(100) signifie que la séquence de redémarrage suit la loi de Luby, qui est une séquence de nombres entiers,
+        // alternant des nombres courts avec des nombres de plus en plus grands.
+        // ceci  permet d'explorer différentes parties de l'arbre de recherche, et d'alterner entre exploration et exploitation.
+        //par exemple, la séquence de Luby pour un cutoff de 100 est : 100, 100, 200, 100, 100, 200, 400, 100, 600,...
+        //ce qui signifie que le solveur va d'abord essayer de trouver une solution en explorant 100 backtracks,
+        // puis redémarrer et explorer à nouveau 100 backtracks, puis redémarrer et explorer 200 backtracks, etc.
+        solver.setRestarts(
                 new FailCounter(model, 100),
-                new org.chocosolver.solver.search.restart.LubyCutoff(100),
-                1000
+                new LubyCutoff(100),
+                1_000_000
         );
 
-        // Trouver une solution
-        Solution solution = model.getSolver().findSolution();
+        Solution solution = solver.findSolution();
+        solver.printStatistics();
 
-        if(solution != null){
+        if (solution != null) {
             int[] res = new int[n];
-            for(int i = 0; i < n; i++){
+            for (int i = 0; i < n; i++) {
                 res[i] = solution.getIntVal(colonnes[i]);
             }
-            System.out.println("Solution trouvée : " + Arrays.toString(res));
-            System.out.println("Nb de backtracks : " + model.getSolver().getBackTrackCount());
-            System.out.println("Temps : " + model.getSolver().getTimeCount() + "s");
+            System.out.println("Nb de backtracks : " + solver.getBackTrackCount());
+            System.out.println("Nb de restarts : " + solver.getRestartCount());
+            System.out.println("Temps : " + solver.getTimeCount() + "s");
             return res;
         }
-
         System.out.println("Pas de solution trouvée");
         return null;
     }
@@ -239,12 +228,23 @@ public class NQueens {
 
     // Programme principal
     public static void main(String[] args) {
-        int n = 17;
-        int[] positions = nQueens_LocalSearch(n);
-//        int[] positions = nQueens_3(n);// nQueens_1(n);
+        int n = 32;
+        int[] positions = nQueens_3(n);
         drawBoard(positions);
 
-
+        // passage à l'échelle : 500 puis 1000 reines
+        for (int grandN : new int[]{500, 1000}) {
+            long debut = System.currentTimeMillis();
+            int[] grandesPositions = nQueens_grandeTaille(grandN, 0);
+            if (grandesPositions!=null) {
+                long duree = System.currentTimeMillis() - debut;
+                System.out.println(grandN + " reines : solution   en " + duree + " ms");
+                System.out.println(Arrays.toString(grandesPositions));
+            }
+            else {
+                System.out.println(grandN + " reines : PAS de solution trouvée");
+            }
+        }
     }
 
 

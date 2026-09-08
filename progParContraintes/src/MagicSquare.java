@@ -37,6 +37,7 @@ public class MagicSquare {
             solver.setSearch(Search.activityBasedSearch(numbers));
         }
 
+        solver.showStatistics();
         solver.showShortStatistics();
         Solution solution = solver.findSolution();
 
