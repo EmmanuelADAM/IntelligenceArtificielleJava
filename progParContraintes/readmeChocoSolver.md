@@ -83,7 +83,7 @@ Le solveur peut être paramétré de différentes façons.
 **Stratégies de recherche** :<br>
 Par défaut, le solveur utilise une stratégie de recherche par défaut. 
 Cependant, il est possible de définir des stratégies personnalisées pour influencer l'ordre dans lequel les variables sont sélectionnées et le mode de sélection des valeurs à leur assigner.
-Voici quelques exemples de stratégies de recherche que l'on peut utiliser via la classe Search :
+Voici quelques exemples de stratégies de recherche que l'on peut utiliser via la classe Search : 
 ```Java
 Solver s = model.getSolver();
 s.setSearch(Search.intVarSearch(

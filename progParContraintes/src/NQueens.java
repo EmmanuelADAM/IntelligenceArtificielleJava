@@ -159,7 +159,7 @@ public class NQueens {
         for (int i = 0; i < n; i++) {
             diagMontantes[i] = colonnes[i].add(i).intVar();
             diagDescendantes[i] = colonnes[i].sub(i).intVar();
-        }
+        } 
         model.post(
                 model.allDifferent(colonnes, "BC"),
                 model.allDifferent(diagMontantes, "BC"),
