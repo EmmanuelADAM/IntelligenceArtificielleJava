@@ -26,7 +26,7 @@ public class AffectationTaches {
         IntVar[] coutsAffectes = new IntVar[nbTaches];
         for (int i = 0; i < nbTaches; i++) {
             coutsAffectes[i] = model.intVar("cout_" + i, 0, 10);
-            // coutsAffectes[i] = couts[i][affectation[i]]
+            // coutsAffectes[i] <- couts[i][affectation[i]]
             model.element(coutsAffectes[i], couts[i], affectation[i]).post();
         }
         model.sum(coutsAffectes, "=", coutTotal).post();

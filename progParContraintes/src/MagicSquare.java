@@ -48,7 +48,7 @@ public class MagicSquare {
     }
 
     /**
-     * * Génère les variables pour le carré magique
+     ** Génère les variables pour le carré magique
      * @param n nb de lignes
      * @param model le modèle ChocoSolver
      * @return le tableau des variables

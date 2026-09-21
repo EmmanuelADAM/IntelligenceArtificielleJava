@@ -20,52 +20,55 @@ import org.chocosolver.solver.variables.IntVar;
  *
  * */
 public class CourseScheduler {
-    public static void main(String[] args) {
+    static void td1_1()
+    {
         // Create a new model
-        Model model = new Model("Course Scheduling");
+        Model model = new Model("Emploi du temps exo1");
+
+        enum Profs {A,B,C,D};
+        int nbProfs = Profs.values().length;
+
+        enum Salles {Sa, Sb, Sc};
+        int numRooms = Salles.values().length;
 
         // Parameters
         enum Slots {_08h_10h, _10h_12h, _14h_16h, _16h_18h};
         int numTimeSlots = Slots.values().length;
 
-        enum Courses {Math, Physics, Chemistry, Biology, History};
-        int numCourses = Courses.values().length;
+        enum Cours {Math, Physique, Chimie, Biologie, Histoire};
+        int numCours = Cours.values().length;
 
-        enum Rooms {A, B};
-        int numRooms = Rooms.values().length;
 
-        enum Profs {Durand, Dupont, Dupond, Lagaffe};
-        int numTeachers = Profs.values().length;
 
         // Decision Variables
-        // For each course, we need to assign a room, time slot, and teacher
-        IntVar[] courseRooms = model.intVarArray("rooms", numCourses, 0, numRooms - 1);
+        // au cours c_0, on assigne le prof p_0, dans la salle s_0, à l'horaire h_0
+        IntVar[] sallesCours = model.intVarArray("salles", numCours, 0, numRooms - 1);
         //courseRooms[0] = room assigned to course 0 (Math), etc.
-        IntVar[] courseTimeSlots = model.intVarArray("slots", numCourses, 0, numTimeSlots - 1);
+        IntVar[] timeSlotsCours = model.intVarArray("slots", numCours, 0, numTimeSlots - 1);
         //courseTimeSlots[0] = time slot assigned to course 0 (Math), etc.
-        IntVar[] courseTeachers = model.intVarArray("profs", numCourses, 0, numTeachers - 1);
+        IntVar[] profCours = model.intVarArray("profs", numCours, 0, nbProfs - 1);
         //courseTeachers[0] = prof assigned to course 0 (Math), etc.
 
         // Constraints
         // 1. No two courses can be in the same room at the same time (slot)
-        for (int i = 0; i < numCourses; i++) {
-            for (int j = i + 1; j < numCourses; j++) {
+        for (int i = 0; i < numCours; i++) {
+            for (int j = i + 1; j < numCours; j++) {
                 // If courses i and j are at the same time slot, they must be in different rooms
                 // Equivalent to: not being at the  time slot and in the same room
                 // not ( (courseTimeSlots[i] = courseTimeSlots[j]) and (courseRooms[i] = courseRooms[j]) )
                 // which is the same as, because of De Morgan's laws not (A and B) <=> not A or not B
                 // not courseTimeSlots[i] != courseTimeSlots[j]  or  not courseRooms[i] != courseRooms[j]
-                model.or(model.arithm(courseTimeSlots[i], "!=", courseTimeSlots[j]),
-                         model.arithm(courseRooms[i], "!=", courseRooms[j])).post();
+                model.or(model.arithm(timeSlotsCours[i], "!=", timeSlotsCours[j]),
+                        model.arithm(sallesCours[i], "!=", sallesCours[j])).post();
             }
         }
 
         // 2. A teacher can't teach two courses at the same time
-        for (int i = 0; i < numCourses-1; i++) {
-            for (int j = i + 1; j < numCourses; j++) {
+        for (int i = 0; i < numCours-1; i++) {
+            for (int j = i + 1; j < numCours; j++) {
                 model.or(
-                        model.arithm(courseTimeSlots[i], "!=", courseTimeSlots[j]),
-                        model.arithm(courseTeachers[i], "!=", courseTeachers[j])
+                        model.arithm(timeSlotsCours[i], "!=", timeSlotsCours[j]),
+                        model.arithm(profCours[i], "!=", profCours[j])
 
                 ).post();
             }
@@ -78,50 +81,152 @@ public class CourseScheduler {
         //  Lagaffe can only teach Biology and History
 
         // so Chemistry, Biology, History cannot be assigned to Durand
-        model.arithm(courseTeachers[Courses.Chemistry.ordinal()], "!=", Profs.Durand.ordinal()).post();
-        model.arithm(courseTeachers[Courses.Biology.ordinal()], "!=", Profs.Durand.ordinal()).post();
-        model.arithm(courseTeachers[Courses.History.ordinal()], "!=", Profs.Durand.ordinal()).post();
+        model.arithm(profCours[Cours.Chimie.ordinal()], "!=", Profs.A.ordinal()).post();
+        model.arithm(profCours[Cours.Biologie.ordinal()], "!=", Profs.A.ordinal()).post();
+        model.arithm(profCours[Cours.Histoire.ordinal()], "!=", Profs.A.ordinal()).post();
         // so Math, Biology, History cannot be assigned to Dupont
-        model.arithm(courseTeachers[Courses.Math.ordinal()], "!=", Profs.Dupont.ordinal()).post();
-        model.arithm(courseTeachers[Courses.Biology.ordinal()], "!=", Profs.Dupont.ordinal()).post();
-        model.arithm(courseTeachers[Courses.History.ordinal()], "!=", Profs.Dupont.ordinal()).post();
+        model.arithm(profCours[Cours.Math.ordinal()], "!=", Profs.B.ordinal()).post();
+        model.arithm(profCours[Cours.Biologie.ordinal()], "!=", Profs.B.ordinal()).post();
+        model.arithm(profCours[Cours.Histoire.ordinal()], "!=", Profs.B.ordinal()).post();
         // so Math, Physics, History cannot be assigned to Dupond
-        model.arithm(courseTeachers[Courses.Math.ordinal()], "!=", Profs.Dupond.ordinal()).post();
-        model.arithm(courseTeachers[Courses.Physics.ordinal()], "!=", Profs.Dupond.ordinal()).post();
-        model.arithm(courseTeachers[Courses.History.ordinal()], "!=", Profs.Dupond.ordinal()).post();
+        model.arithm(profCours[Cours.Math.ordinal()], "!=", Profs.C.ordinal()).post();
+        model.arithm(profCours[Cours.Physique.ordinal()], "!=", Profs.C.ordinal()).post();
+        model.arithm(profCours[Cours.Histoire.ordinal()], "!=", Profs.C.ordinal()).post();
         // so Math, Physics, Chemistry cannot be assigned to Lagaffe
-        model.arithm(courseTeachers[Courses.Math.ordinal()], "!=", Profs.Lagaffe.ordinal()).post();
-        model.arithm(courseTeachers[Courses.Physics.ordinal()], "!=", Profs.Lagaffe.ordinal()).post();
-        model.arithm(courseTeachers[Courses.Chemistry.ordinal()], "!=", Profs.Lagaffe.ordinal()).post();
+        model.arithm(profCours[Cours.Math.ordinal()], "!=", Profs.D.ordinal()).post();
+        model.arithm(profCours[Cours.Physique.ordinal()], "!=", Profs.D.ordinal()).post();
+        model.arithm(profCours[Cours.Chimie.ordinal()], "!=", Profs.D.ordinal()).post();
 
 
-        // 4. Room capacity constraints.
-        // Physics and Chemistry courses can only be hosted in room B
-        // and Room B can only host Physics and Chemistry courses
-        model.arithm(courseRooms[Courses.Physics.ordinal()], "=", Rooms.B.ordinal()).post();
-        model.arithm(courseRooms[Courses.Chemistry.ordinal()], "=", Rooms.B.ordinal()).post();
-        model.arithm(courseRooms[Courses.Math.ordinal()], "!=", Rooms.B.ordinal()).post();
-        model.arithm(courseRooms[Courses.Biology.ordinal()], "!=", Rooms.B.ordinal()).post();
-        model.arithm(courseRooms[Courses.History.ordinal()], "!=", Rooms.B.ordinal()).post();
-
-        model.getSolver().printShortStatistics();
 
 
         // Find solution
         if (model.getSolver().solve()) {
+            model.getSolver().printShortStatistics();
             // Print solution
             System.out.println("Solution found!");
             System.out.println(model.getSolver().getSolutionCount() + " solution(s) found.");
-            for (int i = 0; i < numCourses; i++) {
-                System.out.printf("Course %s: Room %s, Time Slot %s, Teacher %s\n",
-                        Courses.values()[i],
-                        Rooms.values()[courseRooms[i].getValue()],
-                        Slots.values()[courseTimeSlots[i].getValue()],
-                        Profs.values()[courseTeachers[i].getValue()]);
+            for (int i = 0; i < numCours; i++) {
+                System.out.printf("Cours %s: Salle %s, Horaire %s, Prof. %s\n",
+                        Cours.values()[i],
+                        Salles.values()[sallesCours[i].getValue()],
+                        Slots.values()[timeSlotsCours[i].getValue()],
+                        Profs.values()[profCours[i].getValue()]);
             }
         }
         else {
             System.out.println("No solution found.");
         }
+    }
+
+void td1_1_old()
+{
+    // Create a new model
+    Model model = new Model("Course Scheduling");
+
+    // Parameters
+    enum Slots {_08h_10h, _10h_12h, _14h_16h, _16h_18h};
+    int numTimeSlots = Slots.values().length;
+
+    enum Courses {Math, Physics, Chemistry, Biology, History};
+    int numCourses = Courses.values().length;
+
+    enum Rooms {A, B};
+    int numRooms = Rooms.values().length;
+
+    enum Profs {Durand, Dupont, Dupond, Lagaffe};
+    int numTeachers = Profs.values().length;
+
+    // Decision Variables
+    // For each course, we need to assign a room, time slot, and teacher
+    IntVar[] courseRooms = model.intVarArray("rooms", numCourses, 0, numRooms - 1);
+    //courseRooms[0] = room assigned to course 0 (Math), etc.
+    IntVar[] courseTimeSlots = model.intVarArray("slots", numCourses, 0, numTimeSlots - 1);
+    //courseTimeSlots[0] = time slot assigned to course 0 (Math), etc.
+    IntVar[] courseTeachers = model.intVarArray("profs", numCourses, 0, numTeachers - 1);
+    //courseTeachers[0] = prof assigned to course 0 (Math), etc.
+
+    // Constraints
+    // 1. No two courses can be in the same room at the same time (slot)
+    for (int i = 0; i < numCourses; i++) {
+        for (int j = i + 1; j < numCourses; j++) {
+            // If courses i and j are at the same time slot, they must be in different rooms
+            // Equivalent to: not being at the  time slot and in the same room
+            // not ( (courseTimeSlots[i] = courseTimeSlots[j]) and (courseRooms[i] = courseRooms[j]) )
+            // which is the same as, because of De Morgan's laws not (A and B) <=> not A or not B
+            // not courseTimeSlots[i] != courseTimeSlots[j]  or  not courseRooms[i] != courseRooms[j]
+            model.or(model.arithm(courseTimeSlots[i], "!=", courseTimeSlots[j]),
+                    model.arithm(courseRooms[i], "!=", courseRooms[j])).post();
+        }
+    }
+
+    // 2. A teacher can't teach two courses at the same time
+    for (int i = 0; i < numCourses-1; i++) {
+        for (int j = i + 1; j < numCourses; j++) {
+            model.or(
+                    model.arithm(courseTimeSlots[i], "!=", courseTimeSlots[j]),
+                    model.arithm(courseTeachers[i], "!=", courseTeachers[j])
+
+            ).post();
+        }
+    }
+
+    // 3. Specific teacher qualifications
+    //  Durand can only teach Math and Physics
+    //  Dupont can only teach Chemistry and Physics
+    //  Dupond can only teach Chemistry and Biology
+    //  Lagaffe can only teach Biology and History
+
+    // so Chemistry, Biology, History cannot be assigned to Durand
+    model.arithm(courseTeachers[Courses.Chemistry.ordinal()], "!=", Profs.Durand.ordinal()).post();
+    model.arithm(courseTeachers[Courses.Biology.ordinal()], "!=", Profs.Durand.ordinal()).post();
+    model.arithm(courseTeachers[Courses.History.ordinal()], "!=", Profs.Durand.ordinal()).post();
+    // so Math, Biology, History cannot be assigned to Dupont
+    model.arithm(courseTeachers[Courses.Math.ordinal()], "!=", Profs.Dupont.ordinal()).post();
+    model.arithm(courseTeachers[Courses.Biology.ordinal()], "!=", Profs.Dupont.ordinal()).post();
+    model.arithm(courseTeachers[Courses.History.ordinal()], "!=", Profs.Dupont.ordinal()).post();
+    // so Math, Physics, History cannot be assigned to Dupond
+    model.arithm(courseTeachers[Courses.Math.ordinal()], "!=", Profs.Dupond.ordinal()).post();
+    model.arithm(courseTeachers[Courses.Physics.ordinal()], "!=", Profs.Dupond.ordinal()).post();
+    model.arithm(courseTeachers[Courses.History.ordinal()], "!=", Profs.Dupond.ordinal()).post();
+    // so Math, Physics, Chemistry cannot be assigned to Lagaffe
+    model.arithm(courseTeachers[Courses.Math.ordinal()], "!=", Profs.Lagaffe.ordinal()).post();
+    model.arithm(courseTeachers[Courses.Physics.ordinal()], "!=", Profs.Lagaffe.ordinal()).post();
+    model.arithm(courseTeachers[Courses.Chemistry.ordinal()], "!=", Profs.Lagaffe.ordinal()).post();
+
+
+    // 4. Room capacity constraints.
+    // Physics and Chemistry courses can only be hosted in room B
+    // and Room B can only host Physics and Chemistry courses
+    model.arithm(courseRooms[Courses.Physics.ordinal()], "=", Rooms.B.ordinal()).post();
+    model.arithm(courseRooms[Courses.Chemistry.ordinal()], "=", Rooms.B.ordinal()).post();
+    model.arithm(courseRooms[Courses.Math.ordinal()], "!=", Rooms.B.ordinal()).post();
+    model.arithm(courseRooms[Courses.Biology.ordinal()], "!=", Rooms.B.ordinal()).post();
+    model.arithm(courseRooms[Courses.History.ordinal()], "!=", Rooms.B.ordinal()).post();
+
+    model.getSolver().printShortStatistics();
+
+
+    // Find solution
+    if (model.getSolver().solve()) {
+        // Print solution
+        System.out.println("Solution found!");
+        System.out.println(model.getSolver().getSolutionCount() + " solution(s) found.");
+        for (int i = 0; i < numCourses; i++) {
+            System.out.printf("Course %s: Room %s, Time Slot %s, Teacher %s\n",
+                    Courses.values()[i],
+                    Rooms.values()[courseRooms[i].getValue()],
+                    Slots.values()[courseTimeSlots[i].getValue()],
+                    Profs.values()[courseTeachers[i].getValue()]);
+        }
+    }
+    else {
+        System.out.println("No solution found.");
+    }
+}
+
+
+    public static void main(String[] args) {
+        td1_1();
     }
 }

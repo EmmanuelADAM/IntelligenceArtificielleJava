@@ -12,6 +12,44 @@ import static org.chocosolver.solver.search.strategy.Search.*;
 
 public class ProductionScheduling {
 
+
+    static void planifTacheTD2_1()
+    {
+        // Create a new model
+        Model model = new Model("planif taches");
+
+        // variables de décision : temps de début des taches
+        IntVar d1 = model.intVar("d1",  0, 12);
+        IntVar d2 = model.intVar("d2",  0, 12);
+        IntVar d3 = model.intVar("d3",  0, 12);
+        IntVar d4 = model.intVar("d4",  0, 12);
+        IntVar d5 = model.intVar("d5",  0, 12);
+        IntVar d6 = model.intVar("d6",  0, 12);
+
+        //contraintes de précedence entre taches
+        model.arithm(d6, ">=", d1, "+", 1).post();
+        model.arithm(d6, ">=", d5, "+", 2).post();
+        model.arithm(d5, ">=", d4, "+", 1).post();
+        model.arithm(d4, ">=", d2, "+", 1).post();
+        model.arithm(d4, ">=", d3, "+", 2).post();
+        //les taches doivent se terminer avant t=9
+        model.arithm(d6, "<=", 9).post();
+
+        // Find and print  solution
+        Solver s = model.getSolver();
+        System.out.println(model);
+
+        Solution solution = s.findSolution();
+        if(solution != null){
+            System.out.println(solution);
+        }
+        else {
+            System.out.println("pas de solution avec ces contraintes !!");
+        }
+    }
+
+
+
     static void planifTacheTD()
     {
         // Create a new model
@@ -22,28 +60,38 @@ public class ProductionScheduling {
 
         int tempsMax = 12;
         // Decision Variables
-        IntVar[] startTime = model.intVarArray("taches", numJobs, 0, tempsMax);
-        int[] duree = {1,1,2,1,2,1};
+        IntVar[] startTime = model.intVarArray("start_task", numJobs, 0, tempsMax);
+        int[] duration = {1,1,2,1,2,1};
 
-        model.arithm(startTime[5], ">=", startTime[0], "+", duree[0]).post();
-        model.arithm(startTime[3], ">=", startTime[1], "+", duree[1]).post();
-        model.arithm(startTime[3], ">=", startTime[2], "+", duree[2]).post();
-        model.arithm(startTime[4], ">=", startTime[3], "+", duree[3]).post();
-        model.arithm(startTime[5], ">=", startTime[4], "+", duree[4]).post();
+        model.arithm(startTime[5], ">=", startTime[0], "+", duration[0]).post();
+        model.arithm(startTime[3], ">=", startTime[1], "+", duration[1]).post();
+        model.arithm(startTime[3], ">=", startTime[2], "+", duration[2]).post();
+        model.arithm(startTime[4], ">=", startTime[3], "+", duration[3]).post();
+        model.arithm(startTime[5], ">=", startTime[4], "+", duration[4]).post();
+
+        IntVar fin = model.intVar("fin", 0, tempsMax);
+        model.arithm(fin, "=", startTime[5], "+", duration[5]).post();
+        model.arithm(fin, "<=", 10).post();
+
         // Find and print  solution
-        Solver s = model.getSolver();
-        s.setSearch(intVarSearch(
+        Solver solver = model.getSolver();
+        solver.setSearch(intVarSearch(
                 // selects the variable of smallest domain size
                 new FirstFail(model),
-                // selects the smallest domain value (lower bound)
+                // selects the highest domain value (higher bound)
                 new IntDomainMax(),
                 // variables to branch on
                 startTime
         ));
         System.out.println(model.toString());
-        Solution solution = s.findSolution();
+//        Solution solution = s.findSolution();
+        Solution solution = solver.findOptimalSolution(fin, Model.MINIMIZE);
+
         if(solution != null){
             System.out.println(solution.toString());
+        }
+        else {
+            System.out.println("pas de solution avec ces contraintes !!");
         }
     }
 

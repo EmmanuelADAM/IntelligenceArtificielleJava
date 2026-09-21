@@ -280,6 +280,8 @@ public class BigRBAC {
 
         // ---------- Résolution ----------
         Solution best = model.getSolver().findOptimalSolution(totalRoles, true);
+        //afficher le temps de résolution
+        System.out.println("Temps de résolution (ms) : " + model.getSolver().getTimeCount());
 
         if (best == null) {
             System.out.println("Aucune solution trouvée — étrange, instance censée être cohérente.");

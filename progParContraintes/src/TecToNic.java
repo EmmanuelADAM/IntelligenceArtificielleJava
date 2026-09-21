@@ -1,4 +1,5 @@
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
 
 import java.util.*;
@@ -104,6 +105,17 @@ public class TecToNic {
 
     /** Résolution du puzzle et affichage de la solution */
     private  void solve(IntVar[][] grid) {
+        try {
+            model.getSolver().propagate();   // fixpoint de propagation, sans recherche
+        } catch (ContradictionException e) {
+            model.getSolver().getEngine().flush(); // à faire systématiquement après une contradiction
+            System.out.println("Domaines vides : CSP infaisable dès la propagation initiale");
+        }
+        for (IntVar[] row : grid) {
+            for (IntVar v : row) {
+                System.out.println(v); // affiche le domaine courant (ex: x = [1,8], ou {1,3,5} s'il est énuméré)
+            }
+        }
         // Résoudre
         if (model.getSolver().solve()) {
             System.out.println("Solution trouvée:\n");
@@ -137,6 +149,7 @@ public class TecToNic {
             }
 
             System.out.println("\nStatistiques:");
+            model.getSolver().printStatistics();
             System.out.println("Noeuds: " + model.getSolver().getNodeCount());
             System.out.println("Temps: " + model.getSolver().getTimeCount() + "s");
         } else {
@@ -144,9 +157,8 @@ public class TecToNic {
         }
     }
 
-
-    /** Fonction principale : définit la grille et lance la résolution*/
-    public static void main(String[] args) {
+    static void exemple_2()
+    {
         TecToNic puzzle = new TecToNic();
         // Définition des régions
         int[][] regions = {
@@ -182,6 +194,43 @@ public class TecToNic {
         puzzle.defineConstraints(grid);
 
         puzzle.solve(grid);
+    }
+
+    static void exemple_1()
+    {
+        TecToNic puzzle = new TecToNic();
+        // Définition des régions
+        int[][] regions = {
+                {0, 0, 1, 1},
+                {0, 0, 1, 1},
+                {2, 2, 3, 1},
+                {2, 2, 3, 3},
+                {2, 4, 3, 3}
+        };
+        // Contraintes des chiffres donnés (ligne, colonne, valeur)
+        int[][] given = {
+                {1, 0, 3},
+                {1, 3, 5},
+                {2, 2, 3},
+                {2, 3, 2},
+                {3, 0, 5},
+                {4, 3, 4},
+        };
+
+        puzzle.init(regions, given);
+
+        IntVar[][] grid = puzzle.defineVariables(regions);
+
+        puzzle.defineConstraints(grid);
+
+        puzzle.solve(grid);
+    }
+
+
+
+    /** Fonction principale : définit la grille et lance la résolution*/
+    public static void main(String[] args) {
+        exemple_2();
     }
 
 

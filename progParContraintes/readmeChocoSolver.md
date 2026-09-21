@@ -83,7 +83,7 @@ Le solveur peut être paramétré de différentes façons.
 **Stratégies de recherche** :<br>
 Par défaut, le solveur utilise une stratégie de recherche par défaut. 
 Cependant, il est possible de définir des stratégies personnalisées pour influencer l'ordre dans lequel les variables sont sélectionnées et le mode de sélection des valeurs à leur assigner.
-Voici quelques exemples de stratégies de recherche que l'on peut utiliser via la classe Search : 
+Voici quelques exemples de stratégies de recherche que l'on peut utiliser via la classe Search :
 ```Java
 Solver s = model.getSolver();
 s.setSearch(Search.intVarSearch(
@@ -91,10 +91,8 @@ s.setSearch(Search.intVarSearch(
 new FirstFail(model),
 // selects the smallest domain value (lower bound)
 new IntDomainMin(),
-// apply equality (var = val)
-DecisionOperatorFactory.makeIntEq(),
 // variables to branch on
-vars
+vars))
 ```
 - plus d'une 20e de stratégies de sélections de variables sont définies ici : [chocosolver/solver/search/strategy/selectors](https://javadoc.io/doc/org.choco-solver/choco-solver/latest/org.chocosolver.solver/org/chocosolver/solver/search/strategy/selectors/variables/package-summary.html) dont
 - `FirstFail` : sélectionne la variable avec le plus petit domaine
