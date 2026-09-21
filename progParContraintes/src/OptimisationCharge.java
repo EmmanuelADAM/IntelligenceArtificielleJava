@@ -7,6 +7,7 @@ import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.constraints.Constraint;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class OptimisationCharge {
 
@@ -61,6 +62,14 @@ public class OptimisationCharge {
                 }
             }
         }
+    }
+
+    private void test()
+    {
+        List<Integer> liste = List.of(1, 2, 3, 4);
+        var minOptionel = liste.stream().min(Integer::compareTo);
+        System.out.println(minOptionel.orElseGet(()->-1));
+        Supplier<Integer> s;
     }
 
     public static void main(String[] args) {

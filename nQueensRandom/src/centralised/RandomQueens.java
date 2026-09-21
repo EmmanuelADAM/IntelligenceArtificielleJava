@@ -260,7 +260,7 @@ class RandomQueens {
     public static void main(String[] args) {
         RandomQueens.nb = 1000;
         RandomQueens.verboseLevel = 0;
-        int nbTests = 4;
+        int nbTests = 5;
         var cheffes = new ThreadGroup("course");
         for (int i = 0; i < nbTests; i++) {
             RandomQueens rq = new RandomQueens(nb);

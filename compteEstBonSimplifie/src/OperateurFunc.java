@@ -8,10 +8,10 @@ import java.util.function.BiFunction;
  * @author emmanuel adam
  */
 public enum OperateurFunc {
-   ADDITION("+", (a,b) -> (a + b), (a,b) -> true),
-   SOUSTRACTION("-", (a,b) -> (a - b), (a,b) -> (a > b)),
-   MULTIPLICATION("*", (a,b) -> (a * b), (a,b) -> (a > 1 && b > 1)),
-   DIVISION("/", (a,b) -> (a / b), (a,b) -> (b > 1 && a % b == 0));
+   ADDITION("+",        (a,b) -> (a + b), (a,b) -> true),
+   SOUSTRACTION("-",    (a,b) -> (a - b), (a,b) -> (a > b)),
+   MULTIPLICATION("*",  (a,b) -> (a * b), (a,b) -> (a > 1 && b > 1)),
+   DIVISION("/",        (a,b) -> (a / b), (a,b) -> (b > 1 && a % b == 0));
 
    /** chaine representant le signe de l'operation */
    final String sign;

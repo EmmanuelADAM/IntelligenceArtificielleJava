@@ -157,7 +157,7 @@ public class StateQueen extends State{
      * */
     public static void main(String ...args)
     {
-        StateQueen.nb = 8;
+        StateQueen.nb = 20;
         System.out.println("recherche du pb des " + StateQueen.nb + " reines, parcours en profondeur ");
         System.out.println("patientez env. 15 ms pour 10 reines.");
         long debut = System.currentTimeMillis();
@@ -178,6 +178,7 @@ public class StateQueen extends State{
         else System.out.println("aucune solution trouvee");
         fin = System.currentTimeMillis();
         System.out.println("temps passe en largeur = " + (fin - debut) + " ms");
+
     }
 
 }

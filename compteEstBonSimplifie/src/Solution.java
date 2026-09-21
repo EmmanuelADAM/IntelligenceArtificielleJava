@@ -173,13 +173,12 @@ class Solution
    /** fonction principale, lance la resolution */
    public static void main(String[] args)
    {
-      int but = 2025;
+      int but = 826;
 //      Integer[] tab = new Integer[] { 1, 2, 6, 7, 25, 5 };
       Integer[] tab = new Integer[]{100, 2, 75, 3, 1, 10};
 
       System.out.print("trouver " + but + ", avec : ");
-      for (int v : tab)
-         System.out.print(v + " ; ");
+      for (int v : tab) System.out.print(v + " ; ");
       System.out.println();
 
       int nbThreads = 4;
