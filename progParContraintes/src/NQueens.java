@@ -5,8 +5,9 @@ import org.chocosolver.solver.search.limits.FailCounter;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.restart.LubyCutoff;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMiddle;
 import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
-import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
+import org.chocosolver.solver.search.strategy.selectors.variables.*;
 import org.chocosolver.solver.variables.IntVar;
 
 import java.util.Arrays;
@@ -80,6 +81,7 @@ public class NQueens {
         System.out.println("nb contraintes = "+ model.getCstrs().length);
 
         if(solution != null){
+            model.getSolver().printStatistics();
             System.out.println(solution);
             int[] res = new int[n];
             for(int i=0; i<n; i++){
@@ -96,15 +98,19 @@ public class NQueens {
     static int[] nQueens_3(int n)
     {
         Model model = new Model("probleme des "+ n + " reines");
-        IntVar[] colonnes = model.intVarArray("reine_", n, 1, n, true);
-
-        for(int i  = 0; i < n-1; i++){
-            for(int j = i + 1; j < n; j++){
-                colonnes[i].ne(colonnes[j]).post();
-                colonnes[i].ne(colonnes[j].sub(j - i)).post();
-                colonnes[i].ne(colonnes[j].add(j - i)).post();
-            }
+        IntVar[] colonnes = model.intVarArray("reine_", n, 1, n, false);
+        IntVar[] diag1 = new IntVar[n];
+        IntVar[] diag2 = new IntVar[n];
+        for(int i = 0 ; i < n; i++){
+            diag1[i] = colonnes[i].sub(i).intVar();
+            diag2[i] = colonnes[i].add(i).intVar();
         }
+        model.post(
+                model.allDifferent(colonnes),
+                model.allDifferent(diag1),
+                model.allDifferent(diag2)
+        );
+
         System.out.println("nb contraintes = "+ model.getCstrs().length);
 
         Solver s = model.getSolver();
@@ -112,7 +118,7 @@ public class NQueens {
                 //selectionner la variable avec le plus petit domaine
                 new FirstFail(model),
                 //selectionner la valeur à assigner parmi la plus petite du domaine
-                new IntDomainMin(),
+                new IntDomainMiddle(false),
                 //les  variables
                 colonnes));
 
@@ -132,7 +138,6 @@ public class NQueens {
         return null;
 
     }
-
 
 
     /**résolution du problème des n reines pour de grandes valeurs de n (500, 1000, ...)
@@ -159,7 +164,7 @@ public class NQueens {
         for (int i = 0; i < n; i++) {
             diagMontantes[i] = colonnes[i].add(i).intVar();
             diagDescendantes[i] = colonnes[i].sub(i).intVar();
-        } 
+        }
         model.post(
                 model.allDifferent(colonnes, "BC"),
                 model.allDifferent(diagMontantes, "BC"),
@@ -229,9 +234,11 @@ public class NQueens {
     // Programme principal
     public static void main(String[] args) {
         int n = 32;
-        int[] positions = nQueens_3(n);
+        int[] positions = nQueens_2(n);
         drawBoard(positions);
 
+        positions = nQueens_3(n);
+        drawBoard(positions);
         // passage à l'échelle : 500 puis 1000 reines
         for (int grandN : new int[]{500, 1000}) {
             long debut = System.currentTimeMillis();
