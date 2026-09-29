@@ -3,12 +3,20 @@ import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.search.limits.FailCounter;
 import org.chocosolver.solver.search.loop.lns.INeighborFactory;
+import org.chocosolver.solver.search.restart.LubyCutoff;
+import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.variables.IntVar;
 import java.util.Arrays;
 
 
 public class NReines {
 
+
+    /**Résout le problème des n reines avec des contraintes arithmétiques classiques (ne, sub, add)
+     * en utilisant des variables faisant partie d'un intervale borné
+     * n variables, 3x(n.(n+1)/2) contraintes
+     * @param n taille de l'échiquier (nombre de reines)
+     * @return les positions des reines (colonne de la reine de chaque ligne), ou null si aucune solution*/
     static int[] testNReines(int n)
     {
     Model model = new Model("probleme des "+ n + " reines");
@@ -24,15 +32,22 @@ public class NReines {
     System.out.println("nb contraintes = "+ model.getCstrs().length);
     Solution solution = model.getSolver().findSolution();
     if(solution != null){
+        model.getSolver().printStatistics();
         System.out.println(solution.toString());
         int[] res = new int[n];
         for(int i=0; i<n; i++){
             res[i] = solution.getIntVal(colonnes[i]);
-    }
+        }
         return res;
     }
     return null;
-}
+    }
+
+    /**résout le problème des n reines avec des contraintes arithmétiques classiques (ne, sub, add)
+     * en générant toutres les valeurs toutes les variables a priori
+     * n variables, 3x(n.(n+1)/2) contraintes
+     * @param n taille de l'échiquier (nombre de reines)
+     * @return les positions des reines (colonne de la reine de chaque ligne), ou null si aucune solution*/
     static int[] testNReines1(int n)
     {
         Model model = new Model("probleme des "+ n + " reines");
@@ -48,11 +63,10 @@ public class NReines {
         System.out.println("nb contraintes = "+ model.getCstrs().length);
         Solution solution = model.getSolver().findSolution();
         if(solution != null){
+            model.getSolver().printStatistics();
             System.out.println(solution);
             int[] res = new int[n];
-            for(int i=0; i<n; i++){
-                res[i] = solution.getIntVal(colonnes[i]);
-            }
+            for(int i=0; i<n; i++)  res[i] = solution.getIntVal(colonnes[i]);
             return res;
         }
         return null;
@@ -60,28 +74,15 @@ public class NReines {
     }
 
 
-    static void testNReines2(int n)
-    {
-        Model model = new Model(n + "-queens problem");
-        IntVar[] vars = model.intVarArray("Q", n, 0, n-1, false);
-
-        for(int i  = 0; i < n-1; i++){
-            for(int j = i + 1; j < n; j++){
-                vars[i].ne(vars[j]).post();
-                vars[i].ne(vars[j].sub(j - i)).post();
-                vars[i].ne(vars[j].add(j - i)).post();            }
-        }
-        Solution solution = model.getSolver().findSolution();
-        System.out.println("nb contraintes = "+ model.getCstrs().length);
-        if(solution != null){
-            System.out.println(solution.toString());
-        }
-    }
-
-    static void testNReines3(int n)
+    /**Résout le problème des n reines avec des contraintes allDifferent (lignes et diagonales)
+     * 3.n variables, 3 contraintes
+     * plus de variables, moins de contraintes
+     * @param n taille de l'échiquier (nombre de reines)*/
+    static int[] testNReines2(int n)
     {
         Model model = new Model(n + "-queens problem");
         IntVar[] lignes = model.intVarArray("Q", n, 0, n-1, false);
+        //diag1/diag2 : décalages des lignes selon les deux diagonales, pour contraindre leur unicité
         IntVar[] diag1 = new IntVar[n];
         IntVar[] diag2 = new IntVar[n];
         for(int i = 0 ; i < n; i++){
@@ -93,180 +94,133 @@ public class NReines {
                 model.allDifferent(diag1),
                 model.allDifferent(diag2)
         );
-        //afficher le nb de contraintes
+        Solution solution = model.getSolver().findSolution();
         System.out.println("nb contraintes = "+ model.getCstrs().length);
-        //afficher le nb de variables
-        System.out.println("nb variables = "+ model.getVars().length);
-
-        Solver s = model.getSolver();
-        s.setLNS(INeighborFactory.random(lignes), new FailCounter(s, 100));
-        Solution solution = s.findSolution();
         if(solution != null){
+            model.getSolver().printStatistics();
             System.out.println(solution.toString());
+            int[] res = new int[n];
+            for(int i=0; i<n; i++)  res[i] = solution.getIntVal(lignes[i]);
+            return res;
         }
+        return null;
     }
 
-    static void testCarreMagique() {
-        int n = 8;
-        int n2 = n * n;
-        Model model = new Model("MAGIC SQUARE");
-        IntVar[] nb = new IntVar[n2];
+    /**résolution du problème des n reines pour de grandes valeurs de n (500, 1000, ...)
+     * 3.n variables, 3 contraintes
+     * une recherche COMPLÈTE (backtracking + propagation) mais RANDOMISÉE,
+     *  tant sur le choix des variables que de leurs valeurs, et couplée avec des redémarrages selon la loi de Luby :
+     *  chaque restart explore alors une branche différente de l'arbre de recherche,
+     *  ce qui permet d'éviter de rester bloqué dans un sous-arbre sans solution.
+     *  La relance du backtrack est de plus en plus patiente.. ce qui permttra d'explorer des sous-arbres plus profonds,
+     * et au pire de balayer tout l'arbre de recherche
+     *
+     * @param n nombre de reines (testé jusqu'à 1000, ok en quelques secondes)
+     * @param seed graine du générateur aléatoire utilisé pour le choix des variables/valeurs
+     */
+    static int[] nQueens_grandeTaille(int n, long seed) {
+        Model model = new Model("probleme des " + n + " reines - grande taille");
+
+        // domaine borné (intervalle [0, n-1]) : indispensable en mémoire/temps pour n grand
+        IntVar[] colonnes = model.intVarArray("reine_", n, 0, n - 1, true);
+        IntVar[] diagMontantes = new IntVar[n];
+        IntVar[] diagDescendantes = new IntVar[n];
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                nb[i * n + j] = model.intVar("c" + i + "" + j, 1, n2, false);
-            }
+            diagMontantes[i] = colonnes[i].add(i).intVar();
+            diagDescendantes[i] = colonnes[i].sub(i).intVar();
         }
+        model.post(
+                model.allDifferent(colonnes, "BC"),
+                model.allDifferent(diagMontantes, "BC"),
+                model.allDifferent(diagDescendantes, "BC")
+        );
+        System.out.println("nb contraintes = " + model.getCstrs().length);
 
-        IntVar but = model.intVar(n *(n*n + 1)/2);
-        model.allDifferent(nb).post();
+        Solver solver = model.getSolver();
+        // variable ET valeur choisies au hasard : c'est ce qui rend les restarts réellement utiles
+        solver.setSearch(Search.randomSearch(colonnes, seed));
 
-        System.out.println("but = " + but);
-        //contraintes de lignes
-        for(int i=0; i<n; i++) {
-            IntVar[] ligne = Arrays.copyOfRange(nb, i*n, (i+1)*n);
-            model.post(model.sum(ligne, "=", but));
-        }
-        //contraintes de colonnes
-        for(int j=0; j<n; j++) {
-            IntVar[] colonne = new IntVar[n];
-            for(int i=0; i<n; i++) {
-                colonne[i] = nb[i*n+j];
-            }
-            model.post(model.sum(colonne, "=", but));
-            }
+        // redémarrages en loi de Luby : grâce au hasard ci-dessus, chaque restart tente une branche différente
+        //la faillilimit de 100 signifie que si 100 backtracks sont effectués sans trouver de solution, on redémarre
+        // LubyCutoff(100) signifie que la séquence de redémarrage suit la loi de Luby, qui est une séquence de nombres entiers,
+        // alternant des nombres courts avec des nombres de plus en plus grands.
+        // ceci  permet d'explorer différentes parties de l'arbre de recherche, et d'alterner entre exploration et exploitation.
+        //par exemple, la séquence de Luby pour un cutoff de 100 est : 100, 100, 200, 100, 100, 200, 400, 100, 600,...
+        //ce qui signifie que le solveur va d'abord essayer de trouver une solution en explorant 100 backtracks,
+        // puis redémarrer et explorer à nouveau 100 backtracks, puis redémarrer et explorer 200 backtracks, etc.
+        solver.setRestarts(
+                new FailCounter(model, 100),
+                new LubyCutoff(100),
+                1_000_000
+        );
 
-        Solution solution = model.getSolver().findSolution();
+        Solution solution = solver.findSolution();
+        solver.printStatistics();
+
         if (solution != null) {
-            System.out.println(solution);
-            //affiche la solution sous forme d'un carre
-            for(int i=0; i<n; i++) {
-                for (int j = 0; j < n; j++) {
-                    System.out.print(solution.getIntVal(nb[i * n + j]) + "\t");
-                }
-                System.out.println();
+            int[] res = new int[n];
+            for (int i = 0; i < n; i++) {
+                res[i] = solution.getIntVal(colonnes[i]);
             }
+            System.out.println("Nb de backtracks : " + solver.getBackTrackCount());
+            System.out.println("Nb de restarts : " + solver.getRestartCount());
+            System.out.println("Temps : " + solver.getTimeCount() + "s");
+            return res;
         }
+        System.out.println("Pas de solution trouvée");
+        return null;
     }
 
-    static void testOptimisation(){
-    //les taches 1,2 et 3 doivent etre realisées dans l'ordre 1,2,3
-        // 1 a une durée de 4 jours, 2 dure 3j, 3 dure 2j
-        //il faut minimise le temps de realisation du projet
-        Model model = new Model("Projet");
-        IntVar[] dates = new IntVar[7];
-        for(int i=0; i<3; i++){
-            dates[i*2] = model.intVar("d"+(i+1), 0, 20, false);
-            dates[i*2+1] = model.intVar("f"+(i+1), 0, 20, false);
-        }
-        model.arithm(dates[1], "=", dates[0], "+", 4).post();
-        model.arithm(dates[2], ">=", dates[1]).post();
-        model.arithm(dates[3], "=", dates[2], "+", 3).post();
-        model.arithm(dates[4], ">=", dates[3]).post();
-        model.arithm(dates[5], "=", dates[4], "+", 2).post();
-        //minimise dates[5]
-        model.setObjective(Model.MINIMIZE, dates[5]);
-        Solution solution = model.getSolver().findSolution();
-        if (solution != null) {
-            System.out.println(solution);
-        }
-
-
-    }
-
-    private static void extracted(int no, int nb) {
-        long tempsAvant = System.currentTimeMillis();
-        switch (no){
-            case 0-> testNReines(nb);
-            case 1-> testNReines2(nb);
-            case 2-> testNReines3(nb);
-        }
-
-        long tempsApres = System.currentTimeMillis();
-        System.out.println(tempsApres - tempsAvant + " ms");
-    }
-
-    public static void rendLargent(int nb)
-    {
-                // Montant à rendre (en centimes)
-                int amount = nb;  // 2€87 par exemple
-
-                // Pièces disponibles en centimes
-                int[] coins = {200, 100, 50, 20, 10, 5, 2, 1};
-                // Nombre maximum de chaque pièce disponible (ici 10 de chaque)
-                int maxCoins = 10;
-
-                // Création du modèle
-                Model model = new Model("Money Change Problem");
-
-                // Variables: nombre de pièces de chaque valeur
-                IntVar[] nbCoins = new IntVar[coins.length];
-                for (int i = 0; i < coins.length; i++) {
-                    nbCoins[i] = model.intVar("piece_" + coins[i], 0, maxCoins);
-                }
-
-                // Variable: nombre total de pièces utilisées
-                IntVar totalCoins = model.intVar("total_pieces", 0, maxCoins * coins.length);
-
-                // Contrainte: somme pondérée = montant à rendre
-                IntVar[] coinValues = new IntVar[coins.length];
-                for (int i = 0; i < coins.length; i++) {
-                    coinValues[i] = model.intView(coins[i], nbCoins[i],  0);
-                }
-                model.sum(coinValues, "=", amount).post();
-
-                // Contrainte: calcul du nombre total de pièces
-                model.sum(nbCoins, "=", totalCoins).post();
-
-                // Objectif: minimiser le nombre total de pièces
-                model.setObjective(Model.MINIMIZE, totalCoins);
-
-                // Résolution
-                Solver solver = model.getSolver();
-                while (solver.solve()) {
-                    System.out.println("\nSolution trouvée :");
-                    System.out.println("Montant à rendre : " + amount + " centimes");
-                    System.out.println("Nombre total de pièces : " + totalCoins.getValue());
-                    for (int i = 0; i < coins.length; i++) {
-                        if (nbCoins[i].getValue() > 0) {
-                            System.out.printf("%d pièce(s) de %d centimes%n",
-                                    nbCoins[i].getValue(), coins[i]);
-                        }
-                    }
-                }
-
-                // Statistiques
-                System.out.println("\nStatistiques de résolution :");
-                System.out.println("Nombre de solutions : " + solver.getSolutionCount());
-                System.out.println("Nombre de nœuds : " + solver.getNodeCount());
-                System.out.println("Temps de résolution : " + solver.getTimeCount() + "s");
-    }
 
     /**
      * draw the board with the queens
      */
     private static void drawBoard(int[] queens) {
         int n = queens.length;
+        var black = true;
         for (int queen : queens) {
             for (int j = 0; j < n; j++) {
                 if (queen == j) {
-                    System.out.print(" Q ");
+                    //draw a red queen
+                    System.out.print("\033[31m♛\033[0m");
                 } else {
-                    System.out.print(" . ");
+                    // draw an empty square by alternating colors
+                    if (black) System.out.print("⬛");
+                    else System.out.print("⬜");
                 }
+                black = !black;
             }
             System.out.println();
+            if(n%2==0) black = !black;
         }
+    }
+
+
+    /**teste différents modèles de résolutions des N reines par chocosolver et donne les statistiques*/
+    private static void tryReines(int no, int nb) {
+        var positions =
+                switch (no){
+                    case 0-> testNReines(nb);
+                    case 1-> testNReines1(nb);
+                    case 2-> testNReines2(nb);
+                    case 3-> nQueens_grandeTaille(nb, System.currentTimeMillis());
+                    default -> throw new IllegalStateException("Unexpected value: " + no);
+                };
+        //n'affiche l'échiquier que pour les petites tailles, sinon l'affichage est illisible
+        if (positions != null) {
+            if (nb<=25 ) drawBoard(positions);
+            else {
+                System.out.println("lignes des reines : ");
+                System.out.println(Arrays.toString(positions));
+            }
+        }
+
     }
 
     // Programme principal
     public static void main(String[] args) {
-        //rendLargent(389);
-        int n = 500;
-        int[] positions = testNReines1(n);
-
-        if (n<25 && positions != null) {
-                drawBoard(positions);
-            }
+        for (int i = 0; i < 4; i++) tryReines(i, 25);
+        tryReines(3, 500);
     }
 
 

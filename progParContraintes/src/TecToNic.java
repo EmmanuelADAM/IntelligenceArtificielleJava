@@ -157,6 +157,7 @@ public class TecToNic {
         }
     }
 
+    /**resolution d'un tectonic*/
     static void exemple_2()
     {
         TecToNic puzzle = new TecToNic();
@@ -196,6 +197,7 @@ public class TecToNic {
         puzzle.solve(grid);
     }
 
+    /**resolution d'un tectonic*/
     static void exemple_1()
     {
         TecToNic puzzle = new TecToNic();

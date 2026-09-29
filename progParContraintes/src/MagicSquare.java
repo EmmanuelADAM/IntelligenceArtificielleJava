@@ -11,9 +11,8 @@ public class MagicSquare {
     /**
      * * * Résout le carré magique de taille n x n
      * @param n taille du carré
-     * @param assisted si true, utilise des contraintes assistées pour faciliter la résolution
      * */
-    public static void resolveSquare(int n, boolean assisted) {
+    public static void resolveSquare(int n) {
         Model model = new Model("MAGIC SQUARE");
 
         IntVar[] numbers = generateVariables(n, model);
@@ -22,26 +21,13 @@ public class MagicSquare {
 
         var solver = model.getSolver();
 
-        if (assisted) {
-            model.arithm(numbers[1], "<", numbers[n]).post();
-            if (n % 2 == 1) {
-                //exemple de contraintes assistées pour n impair
-                //on fixe la première cellule à 1
-                numbers[0].eq(1).extension().post();
-            } else {
-                //exemple de contraintes assistées pour n pair
-                //ici on fixe la première cellule à n*n
-                numbers[0].eq(n * n).extension().post();
-            }
-            //choix de la variable qui cumule le plus de conflits
-            solver.setSearch(Search.activityBasedSearch(numbers));
-        }
+        //tester differentes strategies, exemple :
+//        solver.setSearch(Search.activityBasedSearch(numbers));
 
-        solver.showStatistics();
-        solver.showShortStatistics();
         Solution solution = solver.findSolution();
 
         if (solution != null) {
+            solver.printStatistics();
             printArray(numbers, n);
 
         }
@@ -120,6 +106,6 @@ public class MagicSquare {
      * */
     public static void main(String[] args) {
 
-        resolveSquare(4, true);
+        resolveSquare(8);
     }
 }
