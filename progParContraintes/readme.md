@@ -9,7 +9,7 @@ Vous pouvez également trouver des modélisations dans les tutoriaux de la libra
 
 Voici les supports : 
 - [Introduction à chocoSolver](https://emmanueladam.github.io/IntelligenceArtificielleJava/progParContraintes/readmeChocoSolver.html) : présentation de l'outil
-- [Problèmes et solutions types](https://emmanueladam.github.io/IntelligenceArtificielleJava/progParContraintes/) : des énoncés plus ou moins classiques et des exemples de solutions.
+- [Problèmes et solutions types](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/blob/master/progParContraintes/readmeSolutions.md) : des énoncés plus ou moins classiques et des exemples de solutions.
 
 ---
 _E.ADAM_
