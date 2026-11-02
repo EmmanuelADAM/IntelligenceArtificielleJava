@@ -21,10 +21,7 @@ Des algorithmes classiques d'IA en Java, à lire, lancer et modifier. Chaque dos
 | [JavaFX](https://openjfx.io/) | Démos de clustering | Maven `org.openjfx:javafx-controls` |
 | [Ludii](https://ludii.games/download.php) | TP IA pour les jeux | `Ludii.jar` téléchargé sur ludii.games |
 
-## Mettre à jour le site
 
-Le site est une seule page (`index.html`) qui lit la liste des programmes dans `assets/catalogue.js`.
-Pour ajouter un exemple, copier une entrée de `catalogue.js` dans le bon thème et l'adapter. Les liens GitHub sont générés automatiquement.
 
 ---
 Supports pédagogiques d'Emmanuel Adam, fournis tels quels pour un usage éducatif. Merci de citer la source en cas de réutilisation.
