@@ -6,56 +6,20 @@ import org.chocosolver.solver.variables.IntVar;
 public class OptimisationsDemos {
     public static void main(String[] args) {
         violatedConstraints();
-//        bestSolution();
     }
 
-/*    private static void bestSolution() {
-        // Création du modèle
-        Model model = new Model("Simple Optimization Example");
 
-        // Variables
-        IntVar x = model.intVar("x", 0, 10);
-        IntVar y = model.intVar("y", 0, 10);
-
-        // Contrainte : x + y <= 10
-        model.arithm(x, "+", y, "<=", 10).post();
-
-        // Fonction objectif : f = (x - y)^2 + (x + y)^2
-        // On crée d'abord (x - y)
-        IntVar diff = model.intVar("diff", -10, 10);
-        model.arithm(x, "-", y, "=", diff).post();
-        // Puis (x - y)²
-        IntVar diffSq = model.intVar("diffSq", 0, 100);
-        model.times(diff, diff, diffSq).post();
-
-        // On crée  (x + y)
-        IntVar plus = model.intVar("plus", 0, 20);
-        model.arithm(x, "+", y, "=", plus).post();
-        // Puis (x - y)²
-        IntVar plusSq = model.intVar("plusSq", 0, 100);
-        model.times(plus, plus, plusSq).post();
-
-        // f = diffSq + plusSq
-        IntVar f = model.intVar("f", 0, 200);
-        model.sum(new IntVar[]{diffSq, plusSq}, "=", f).post();
-
-        model.setObjective(Model.MAXIMIZE, f);
-        model.setObjective(Model.MINIMIZE, y);
-        // On cherche à minimiser f
-        Solution optimal = model.getSolver().findSolution();
-
-        // Affichage du résultat
-        if (optimal != null) {
-            System.out.println("Solution optimale trouvée :");
-            System.out.println("x = " + optimal.getIntVal(x));
-            System.out.println("y = " + optimal.getIntVal(y));
-            System.out.println("f(x,y) = " + optimal.getIntVal(f));
-        } else {
-            System.out.println("Aucune solution trouvée.");
-        }
-    }
-*/
     private static void violatedConstraints() {
+        System.out.println("""
+            Exemple de violation de contraintes
+            Pour x,y et z dans [0,5], trouver une affectation qui satistait : 
+            - C0 : x + y + z = 14
+            - C1 : x < y
+            - C2 : y < z
+            La contrainte C1 a un poids de 3, C2 de 1 et C3 un poids de 2
+            Résoudre le problème en minimisant les pénalités (poids)""");
+
+
         Model model = new Model("Soft Constraints Example");
 
         // Variables principales
