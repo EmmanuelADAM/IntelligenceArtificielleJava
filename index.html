@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IA en Java</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Algorithmes d'intelligence artificielle en Java : recherche, A*, recherche locale, algorithmes génétiques, programmation par contraintes, jeux, clustering.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Mise en page : en-tête avec une recherche A* animée sur grille, carte des thèmes,
+   barre de recherche collante, une section par thème (titre à gauche, projets à droite),
+   puis « Mise en route » (JDK, IDE, bibliothèques). */
+:root {
+  --paper: #F2F4F8;
+  --surface: #FFFFFF;
+  --ink: #121826;
+  --muted: #566075;
+  --line: #D9DFE9;
+  --accent: #2B59C3;
+  --accent-ink: #FFFFFF;
+  --tint: #E8EEFB;
+
+  --t-recherche: #6A3FC4;
+  --t-locale: #B36200;
+  --t-contraintes: #0E8775;
+  --t-jeux: #C2364F;
+  --t-clustering: #4C8A1F;
+
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --radius: 10px;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0D1119; --surface: #151B26; --ink: #E5E9F1; --muted: #97A1B5; --line: #273044;
+    --accent: #7EA2FF; --accent-ink: #0B1430; --tint: #1A2440;
+    --t-recherche: #B596FF; --t-locale: #F2A64A; --t-contraintes: #3CCDB4; --t-jeux: #FF7A93; --t-clustering: #8FD05A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0D1119; --surface: #151B26; --ink: #E5E9F1; --muted: #97A1B5; --line: #273044;
+  --accent: #7EA2FF; --accent-ink: #0B1430; --tint: #1A2440;
+  --t-recherche: #B596FF; --t-locale: #F2A64A; --t-contraintes: #3CCDB4; --t-jeux: #FF7A93; --t-clustering: #8FD05A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 16px/1.6 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.mono, code { font-family: var(--f-mono); font-size: .9em; }
+
+/* ---------- En-tête ---------- */
+.hero { padding-block: 40px 28px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.eyebrow {
+  font: 500 12px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.eyebrow span + span::before { content: "·"; margin-right: 10px; }
+h1 {
+  font: 800 clamp(2.6rem, 6vw, 4.6rem)/0.98 var(--f-display); letter-spacing: -0.03em;
+  margin: 18px 0 18px; text-wrap: balance;
+}
+h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: 1.12rem; color: var(--muted); max-width: 54ch; margin: 0 0 24px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px;
+  font: 600 14px/1 var(--f-body); text-decoration: none; border: 1px solid var(--line); background: var(--surface);
+  transition: border-color .15s, transform .15s;
+}
+.btn:hover { border-color: var(--ink); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { transform: translateY(-1px); }
+.grid-box { position: relative; aspect-ratio: 5 / 4; max-width: 100%; }
+#astar { width: 100%; height: 100%; display: block; border-radius: var(--radius); }
+.grid-legend {
+  position: absolute; left: 0; bottom: -22px; display: flex; gap: 14px; flex-wrap: wrap;
+  font: 400 11px/1.3 var(--f-mono); color: var(--muted);
+}
+.grid-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.load-in { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+.load-in.d1 { animation-delay: .08s; } .load-in.d2 { animation-delay: .16s; } .load-in.d3 { animation-delay: .24s; }
+@keyframes rise { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .load-in { animation: none; } }
+
+/* ---------- Carte des thèmes ---------- */
+.map { padding-block: 28px 28px; }
+.map-list { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.map-list li { flex: 1 1 210px; display: flex; }
+.tile {
+  flex: 1; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: baseline;
+  padding: 14px 16px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line);
+  text-decoration: none; transition: border-color .15s, transform .15s;
+}
+.tile:hover { border-color: var(--c); transform: translateY(-2px); }
+.tile .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--c); align-self: center; }
+.tile .name { font: 700 1rem/1.2 var(--f-display); }
+.tile .count { font: 500 12px/1 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tile .tag { grid-column: 2 / 4; font-size: .86rem; color: var(--muted); line-height: 1.35; }
+
+/* ---------- Barre d'outils ---------- */
+.toolbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-block: 1px solid var(--line);
+}
+.toolbar .wrap { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding-block: 12px; }
+.search { flex: 1 1 260px; position: relative; min-width: 0; }
+.search input {
+  width: 100%; padding: 10px 12px 10px 36px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); font: 400 15px/1.2 var(--f-body);
+}
+.search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.seg button {
+  border: 0; background: transparent; color: var(--muted); padding: 9px 12px; font: 500 14px/1 var(--f-body); cursor: pointer;
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.switch { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; user-select: none; }
+.switch input { accent-color: var(--accent); width: 16px; height: 16px; }
+.result-count { font: 500 12px/1 var(--f-mono); color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+/* ---------- Sections ---------- */
+main { padding-block: 12px 0; }
+.theme { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 36px; padding-block: 44px; border-bottom: 1px solid var(--line); }
+.theme-head { position: sticky; top: 92px; align-self: start; }
+.kicker { display: flex; align-items: center; gap: 8px; font: 500 12px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+.kicker::before { content: ""; width: 18px; height: 3px; border-radius: 2px; background: var(--c); }
+.theme-head h2, .start h2 { font: 800 clamp(1.7rem, 3vw, 2.2rem)/1.05 var(--f-display); letter-spacing: -0.02em; margin: 12px 0; text-wrap: balance; }
+.theme-head p { color: var(--muted); margin: 0 0 14px; font-size: .97rem; }
+.theme-head .meta { font: 400 12px/1.6 var(--f-mono); color: var(--muted); }
+.group + .group { margin-top: 32px; }
+.group h3 { font: 700 1.05rem/1.2 var(--f-display); margin: 0 0 12px; display: flex; gap: 10px; align-items: baseline; }
+.group h3 small { font: 500 12px/1 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 12px; }
+
+.card {
+  display: flex; flex-direction: column; gap: 10px; padding: 16px; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  transition: border-color .15s, transform .15s;
+}
+.card:hover { border-color: color-mix(in srgb, var(--c) 60%, var(--line)); transform: translateY(-2px); }
+@media (prefers-reduced-motion: reduce) { .card, .tile, .btn { transition: none; } .card:hover, .tile:hover { transform: none; } }
+.card-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pill {
+  font: 500 11px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 7px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted);
+}
+.pill.work { background: var(--c); border-color: var(--c); color: var(--surface); }
+.pill.doc { border-color: var(--c); color: var(--c); }
+.card h4 { font: 700 1.08rem/1.25 var(--f-display); margin: 0; text-wrap: balance; }
+.card .path { font: 400 12px/1.3 var(--f-mono); color: var(--muted); overflow-wrap: anywhere; }
+.card .desc { margin: 0; font-size: .93rem; line-height: 1.5; }
+.todo { margin: 0; font-size: .88rem; border-left: 2px solid var(--c); padding: 2px 0 2px 10px; }
+.todo b { display: block; font: 500 11px/1.4 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--c); }
+.run { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
+.run a { font: 500 12.5px/1.3 var(--f-mono); color: var(--ink); text-decoration: none; padding: 3px 6px; border-radius: 4px; background: color-mix(in srgb, var(--c) 12%, transparent); overflow-wrap: anywhere; }
+.run a:hover { text-decoration: underline; }
+.libs { display: flex; flex-wrap: wrap; gap: 4px; }
+.libs span { font: 400 11px/1 var(--f-mono); padding: 4px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--ink); }
+.files { font-size: .82rem; color: var(--muted); }
+.files a { font-family: var(--f-mono); font-size: 12px; text-decoration-color: var(--line); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.files a:hover { color: var(--ink); text-decoration-color: currentColor; }
+.actions { display: flex; gap: 6px; margin-top: auto; padding-top: 4px; flex-wrap: wrap; }
+.act {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 6px;
+  font: 600 13px/1 var(--f-body); text-decoration: none; border: 1px solid var(--line); color: var(--ink);
+}
+.act:hover { border-color: var(--ink); }
+.act.main { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.act.main:hover { background: var(--c); border-color: var(--c); color: var(--surface); }
+.solutions { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 8px; background: var(--tint); }
+.solutions a { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: .88rem; text-decoration: none; }
+.solutions a span { min-width: 0; }
+.solutions a:hover span:first-child { text-decoration: underline; }
+.solutions a span:last-child { font: 400 12px/1.4 var(--f-mono); color: var(--muted); overflow-wrap: anywhere; }
+body.hide-solutions .solutions, body.hide-solutions .sol-pill { display: none; }
+
+/* Liste compacte (exemples d'un fichier) */
+.rows { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.row { display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; padding: 11px 14px; }
+.row + .row { border-top: 1px solid var(--line); }
+.row:hover { background: color-mix(in srgb, var(--c) 6%, transparent); }
+.row .t { font-weight: 600; font-size: .95rem; }
+.row .d { color: var(--muted); font-size: .9rem; min-width: 0; }
+.row a { font: 500 12px/1 var(--f-mono); text-decoration: none; padding: 6px 8px; border-radius: 5px; border: 1px solid var(--line); white-space: nowrap; }
+.row a:hover { border-color: var(--ink); }
+
+/* Encadré formule */
+.extras { padding: 20px; border: 1px dashed color-mix(in srgb, var(--c) 55%, var(--line)); border-radius: var(--radius); }
+.extras h3 { margin-bottom: 14px; }
+.formula { overflow-x: auto; font: 500 clamp(1rem, 2.2vw, 1.25rem)/1.4 var(--f-mono); padding: 14px 16px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); white-space: nowrap; }
+.legend { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 14px 0 0; font-size: .9rem; }
+.legend dt { font-family: var(--f-mono); font-size: .85rem; color: var(--c); }
+.legend dd { margin: 0; color: var(--muted); }
+.extras .variants { margin: 14px 0 0; font-size: .88rem; color: var(--muted); }
+
+.empty { padding: 60px 0; text-align: center; color: var(--muted); }
+
+/* ---------- Mise en route ---------- */
+.start { padding-block: 48px; display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 36px; --c: var(--accent); }
+.steps { list-style: none; margin: 0 0 24px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: st; }
+.steps li { counter-increment: st; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); font-size: .92rem; }
+.steps li::before { content: counter(st); display: block; font: 800 1.6rem/1 var(--f-display); color: var(--accent); margin-bottom: 8px; }
+.steps b { display: block; margin-bottom: 4px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+tr:last-child td { border-bottom: 0; }
+th { font: 500 11px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+td code { white-space: nowrap; }
+
+/* ---------- Pied de page ---------- */
+footer { border-top: 1px solid var(--line); background: var(--surface); }
+footer .wrap { padding-block: 32px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+footer h6 { margin: 0 0 10px; font: 500 11px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+footer p, footer li { font-size: .9rem; margin: 0; }
+footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+footer .legend-row { display: flex; gap: 8px; align-items: center; }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .grid-box { aspect-ratio: 16 / 8; order: -1; margin-bottom: 26px; }
+  .theme, .start { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 32px; }
+  .theme-head { position: static; }
+  .steps, footer .wrap { grid-template-columns: minmax(0, 1fr); }
+  .row { grid-template-columns: minmax(0, 1fr) auto; }
+  .row .d { grid-column: 1 / -1; grid-row: 2; }
+  .result-count { margin-left: 0; }
+  html { scroll-padding-top: 130px; }
+  .switch .long { display: none; }
+  .toolbar .wrap { gap: 8px 12px; padding-block: 10px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow load-in"><span>Supports de cours</span><span id="stat-line">programmes Java</span></div>
+      <h1 class="load-in d1">Intelligence artificielle <em>en Java</em></h1>
+      <p class="lede load-in d2">Des algorithmes classiques à lire, lancer et modifier : recherche dans un graphe, A*, recherche locale, algorithmes génétiques, programmation par contraintes, IA pour les jeux et clustering.</p>
+      <div class="hero-actions load-in d3">
+        <a class="btn primary" href="#recherche">Commencer par la recherche</a>
+        <a class="btn" href="#demarrer">Mise en route</a>
+        <a class="btn" href="https://github.com/EmmanuelADAM/IntelligenceArtificielleJava" target="_blank" rel="noopener">Dépôt GitHub ↗</a>
+      </div>
+    </div>
+    <div class="grid-box" aria-hidden="true">
+      <canvas id="astar"></canvas>
+      <div class="grid-legend">
+        <span><i style="background: var(--t-contraintes)"></i>départ</span>
+        <span><i style="background: var(--t-jeux)"></i>but</span>
+        <span><i style="background: var(--tint); outline: 1px solid var(--line)"></i>nœuds clos</span>
+        <span><i style="background: var(--accent)"></i>chemin A*</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="map" aria-label="Thèmes">
+  <div class="wrap"><ul class="map-list" id="map"></ul></div>
+</nav>
+
+<div class="toolbar">
+  <div class="wrap">
+    <label class="search" for="q">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Chercher : taquin, sudoku, MCTS, K-Means…" aria-label="Chercher un programme">
+    </label>
+    <div class="seg" role="group" aria-label="Type de ressource">
+      <button type="button" data-kind="all" aria-pressed="true">Tout</button>
+      <button type="button" data-kind="demo" aria-pressed="false">Démos</button>
+      <button type="button" data-kind="work" aria-pressed="false">À faire</button>
+    </div>
+    <label class="switch" for="show-sol"><input id="show-sol" type="checkbox" checked> <span><span class="long">Afficher les </span>corrigés</span></label>
+    <span class="result-count" id="count"></span>
+  </div>
+</div>
+
+<main class="wrap" id="themes"></main>
+
+<section class="wrap start" id="demarrer">
+  <div class="theme-head">
+    <div class="kicker">Avant de commencer</div>
+    <h2>Mise en route</h2>
+    <p>Chaque dossier est un petit projet indépendant. Il suffit de l'ouvrir dans un IDE et de lancer la classe indiquée sur sa carte.</p>
+  </div>
+  <div>
+    <ol class="steps">
+      <li><b>Récupérer le code</b>Cloner le dépôt, ou sur GitHub : <span class="mono">Code → Download ZIP</span>.</li>
+      <li><b>Ouvrir le projet</b>Ouvrir le dossier dans IntelliJ IDEA, Eclipse ou VS Code, avec un JDK 17 ou plus récent. Marquer <span class="mono">src</span> comme dossier source si besoin.</li>
+      <li><b>Lancer</b>Ajouter la bibliothèque éventuelle (tableau ci-dessous), puis exécuter la classe « à lancer ».</li>
+    </ol>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bibliothèque</th><th>Pour</th><th>Comment l'ajouter</th></tr></thead>
+        <tbody id="libs"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h6>Le site Python</h6>
+      <p>Réseaux de neurones, logique floue, Q-Learning et théorie des jeux sont sur <a href="https://emmanueladam.github.io/IntelligenceArtificiellePython/" target="_blank" rel="noopener">IA en Python ↗</a>.</p>
+    </div>
+    <div>
+      <h6>Types de ressources</h6>
+      <ul>
+        <li class="legend-row"><span class="pill">Démo</span> à lancer et lire pour comprendre</li>
+        <li class="legend-row"><span class="pill work" style="--c: var(--ink)">TP</span> à compléter ou améliorer</li>
+        <li class="legend-row"><span class="pill doc" style="--c: var(--ink)">Cours</span> support ou énoncés</li>
+      </ul>
+    </div>
+    <div>
+      <h6>Auteur</h6>
+      <p>Emmanuel Adam. Supports pédagogiques fournis tels quels pour un usage éducatif : merci de citer la source en cas de réutilisation.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/catalogue.js"></script>
+<script>
+(function () {
+  "use strict";
+  if (!window.CATALOGUE || !window.SITE) {
+    document.getElementById("themes").innerHTML = '<p class="empty">Le fichier <span class="mono">assets/catalogue.js</span> est introuvable : placez-le dans un dossier <span class="mono">assets</span> à côté de <span class="mono">index.html</span>.</p>';
+    return;
+  }
+  var SITE = window.SITE, DATA = window.CATALOGUE, LIBS = window.LIBS || [];
+  var BLOB = "https://github.com/" + SITE.repo + "/blob/" + SITE.branch + "/";
+  var TREE = "https://github.com/" + SITE.repo + "/tree/" + SITE.branch + "/";
+  var TYPES = {
+    demo:  { label: "Démo",     kind: "demo", cls: "" },
+    cours: { label: "Cours",    kind: "demo", cls: "doc" },
+    sujet: { label: "Énoncés",  kind: "work", cls: "doc" },
+    exo:   { label: "Exercice", kind: "work", cls: "work" },
+    tp:    { label: "TP",       kind: "work", cls: "work" }
+  };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function url(path) { return path.split("/").map(encodeURIComponent).join("/"); }
+  function base(path) { return path.split("/").pop(); }
+  function norm(s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function link(path) { return (/\.[a-z0-9]+$/i.test(base(path)) ? BLOB : TREE) + url(path); }
+  function ext(href, text, cls, label) {
+    return '<a' + (cls ? ' class="' + cls + '"' : "") + ' href="' + href + '" target="_blank" rel="noopener"' + (label ? ' aria-label="' + esc(label) + '"' : "") + ">" + text + "</a>";
+  }
+
+  var total = 0, mapHtml = "", mainHtml = "";
+
+  DATA.forEach(function (th) {
+    var color = "var(--t-" + th.id + ")";
+    var count = 0, libs = {}, body = "";
+
+    th.groups.forEach(function (g) {
+      var inner;
+      if (g.compact) {
+        inner = '<ul class="rows">' + g.items.map(function (it) {
+          count++;
+          return '<li class="row" data-kind="demo" data-search="' + esc(norm([it.title, it.desc, it.file, th.title].join(" "))) + '"><span class="t">' + esc(it.title) +
+            '</span><span class="d">' + esc(it.desc) + "</span>" + ext(BLOB + url(it.file), esc(base(it.file)) + " ↗", "", "Code de " + it.title) + "</li>";
+        }).join("") + "</ul>";
+      } else {
+        inner = '<div class="cards">' + g.items.map(function (it) {
+          count++; (it.libs || []).forEach(function (l) { libs[l] = 1; });
+          return card(it, th);
+        }).join("") + "</div>";
+      }
+      body += '<div class="group"><h3>' + esc(g.title) + "<small>" + g.items.length + "</small></h3>" + inner + "</div>";
+    });
+
+    if (th.extras) {
+      var x = th.extras;
+      body += '<div class="group extras"><h3>' + esc(x.title) + '</h3><div class="formula">' + esc(x.formula) + '</div><dl class="legend">' +
+        x.legend.map(function (l) { return "<dt>" + esc(l[0]) + "</dt><dd>" + esc(l[1]) + "</dd>"; }).join("") +
+        '</dl><p class="variants">' + esc(x.variants) + "</p></div>";
+    }
+
+    total += count;
+    var libList = Object.keys(libs).join(" · ");
+    mainHtml += '<section class="theme" id="' + th.id + '" style="--c:' + color + '"><div class="theme-head"><div class="kicker">' +
+      esc(th.tagline) + "</div><h2>" + esc(th.title) + "</h2><p>" + esc(th.intro) + '</p><div class="meta">' + count + " programme" + (count > 1 ? "s" : "") +
+      (libList ? "<br>" + esc(libList) : "") + "</div></div><div>" + body + "</div></section>";
+
+    mapHtml += '<li><a class="tile" href="#' + th.id + '" style="--c:' + color + '"><span class="dot"></span><span class="name">' + esc(th.title) +
+      '</span><span class="count">' + count + '</span><span class="tag">' + esc(th.tagline) + "</span></a></li>";
+  });
+
+  function card(it, th) {
+    var t = TYPES[it.type] || TYPES.demo;
+    var f = it.folder;
+    var text = [it.title, f, it.desc, it.todo || "", it.main || "", (it.files || []).join(" "), (it.libs || []).join(" "), t.label, th.title].join(" ");
+    var h = '<article class="card" data-kind="' + t.kind + '" data-search="' + esc(norm(text)) + '">' +
+      '<div class="card-top"><span class="pill ' + t.cls + '">' + t.label + "</span>" +
+      (it.solutions ? '<span class="pill sol-pill">+ corrigé</span>' : "") + "</div>" +
+      "<div><h4>" + esc(it.title) + '</h4><div class="path">' + esc(it.readme && !it.main ? it.readme : f + "/") + "</div></div>" +
+      '<p class="desc">' + esc(it.desc) + "</p>" +
+      (it.todo ? '<p class="todo"><b>À faire</b>' + esc(it.todo) + "</p>" : "") +
+      (it.main ? '<div class="run">Classe à lancer ' + ext(BLOB + url(f + "/" + it.main), esc(base(it.main))) + "</div>" : "") +
+      (it.files ? '<div class="files">Voir aussi : ' + it.files.map(function (x) { return ext(link(f + "/" + x), esc(base(x))); }).join(", ") + "</div>" : "") +
+      (it.libs ? '<div class="libs">' + it.libs.map(function (l) { return "<span>" + esc(l) + "</span>"; }).join("") + "</div>" : "");
+    if (it.solutions) {
+      h += '<div class="solutions">' + it.solutions.map(function (s) {
+        return ext(link(s.path), "<span>" + esc(s.title) + "</span><span>" + esc(s.path.split("/").slice(-2).join("/")) + "/</span>");
+      }).join("") + "</div>";
+    }
+    var acts = "";
+    if (it.readme) acts += ext(BLOB + url(it.readme), "Lire ↗", "act main");
+    acts += ext(TREE + url(f), (it.readme ? "Dossier" : "Code") + " ↗", it.readme ? "act" : "act main");
+    return h + '<div class="actions">' + acts + "</div></article>";
+  }
+
+  document.getElementById("map").innerHTML = mapHtml;
+  document.getElementById("themes").innerHTML = mainHtml + '<p class="empty" id="empty" hidden>Aucun programme ne correspond à cette recherche.</p>';
+  document.getElementById("stat-line").textContent = total + " programmes · " + DATA.length + " thèmes";
+  document.getElementById("libs").innerHTML = LIBS.map(function (l) {
+    return "<tr><td>" + ext(l.url, esc(l.name) + " ↗") + "</td><td>" + esc(l.use) + "</td><td><code>" + esc(l.how) + "</code></td></tr>";
+  }).join("");
+
+  /* ----- Filtres ----- */
+  var q = document.getElementById("q"), kind = "all";
+  var items = Array.prototype.slice.call(document.querySelectorAll(".card, .row"));
+  var countEl = document.getElementById("count");
+
+  function apply() {
+    var terms = norm(q.value.trim()).split(/\s+/).filter(Boolean), shown = 0;
+    items.forEach(function (c) {
+      var ok = (kind === "all" || c.dataset.kind === kind) && terms.every(function (t) { return c.dataset.search.indexOf(t) !== -1; });
+      c.hidden = !ok; if (ok) shown++;
+    });
+    var filtering = terms.length > 0 || kind !== "all";
+    document.querySelectorAll(".group").forEach(function (g) {
+      g.hidden = g.classList.contains("extras") ? filtering : !g.querySelector(".card:not([hidden]), .row:not([hidden])");
+    });
+    document.querySelectorAll(".theme").forEach(function (s) { s.hidden = !s.querySelector(".card:not([hidden]), .row:not([hidden])"); });
+    document.querySelectorAll(".tile").forEach(function (t) {
+      var s = document.getElementById(t.getAttribute("href").slice(1)); t.style.opacity = s.hidden ? ".4" : "";
+    });
+    document.getElementById("empty").hidden = shown > 0;
+    countEl.textContent = filtering ? shown + " résultat" + (shown > 1 ? "s" : "") : "";
+  }
+  q.addEventListener("input", apply);
+  document.querySelectorAll(".seg button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      kind = b.dataset.kind;
+      document.querySelectorAll(".seg button").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+      apply();
+    });
+  });
+  var sol = document.getElementById("show-sol");
+  try { if (localStorage.getItem("iaj-hide-solutions") === "1") sol.checked = false; } catch (e) {}
+  function solApply() {
+    document.body.classList.toggle("hide-solutions", !sol.checked);
+    try { localStorage.setItem("iaj-hide-solutions", sol.checked ? "0" : "1"); } catch (e) {}
+  }
+  sol.addEventListener("change", solApply); solApply();
+  apply();
+
+  /* ----- A* animé de l'en-tête ----- */
+  var cv = document.getElementById("astar"), ctx = cv.getContext("2d");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var W = 0, H = 0, cols = 0, rows = 0, cell = 0, ox = 0, oy = 0;
+  var walls, start, goal, order, path, pal = {};
+  var phase = "search", step = 0, pathStep = 0, hold = 0, last = 0, running = true, acc = 0;
+
+  function readPalette() {
+    var cs = getComputedStyle(document.documentElement);
+    ["surface", "line", "ink", "muted", "accent", "tint", "paper"].forEach(function (k) { pal[k] = cs.getPropertyValue("--" + k).trim(); });
+    pal.start = cs.getPropertyValue("--t-contraintes").trim();
+    pal.goal = cs.getPropertyValue("--t-jeux").trim();
+  }
+  function size() {
+    var r = cv.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cell = Math.max(14, Math.min(26, Math.floor(W / 22)));
+    cols = Math.floor(W / cell); rows = Math.floor(H / cell);
+    ox = (W - cols * cell) / 2; oy = (H - rows * cell) / 2;
+  }
+  function idx(x, y) { return y * cols + x; }
+  function solve() {
+    /* A* en 8 directions sans couper les coins, distance octile */
+    var n = cols * rows, g = new Float64Array(n).fill(Infinity), from = new Int32Array(n).fill(-1), closed = new Uint8Array(n);
+    var open = [start]; g[start] = 0; var seq = [];
+    var gx = goal % cols, gy = (goal / cols) | 0;
+    function h(i) { var dx = Math.abs(i % cols - gx), dy = Math.abs(((i / cols) | 0) - gy); return Math.max(dx, dy) + 0.414 * Math.min(dx, dy); }
+    while (open.length) {
+      var bi = 0;
+      for (var k = 1; k < open.length; k++) if (g[open[k]] + h(open[k]) < g[open[bi]] + h(open[bi])) bi = k;
+      var cur = open.splice(bi, 1)[0];
+      if (closed[cur]) continue;
+      closed[cur] = 1; seq.push(cur);
+      if (cur === goal) break;
+      var cx = cur % cols, cy = (cur / cols) | 0;
+      for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        var nx = cx + dx, ny = cy + dy;
+        if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+        var ni = idx(nx, ny);
+        if (walls[ni] || closed[ni]) continue;
+        if (dx && dy && (walls[idx(cx + dx, cy)] || walls[idx(cx, cy + dy)])) continue;
+        var ng = g[cur] + (dx && dy ? 1.414 : 1);
+        if (ng < g[ni]) { g[ni] = ng; from[ni] = cur; open.push(ni); }
+      }
+    }
+    if (!closed[goal]) return false;
+    var p = [], c = goal; while (c !== -1) { p.unshift(c); c = from[c]; }
+    order = seq; path = p; return true;
+  }
+  function newProblem() {
+    for (var tries = 0; tries < 30; tries++) {
+      walls = new Uint8Array(cols * rows);
+      for (var i = 0; i < walls.length; i++) walls[i] = Math.random() < 0.27 ? 1 : 0;
+      /* quelques « rayonnages » d'entrepôt */
+      for (var s = 0; s < 3; s++) {
+        var x = 3 + Math.floor(Math.random() * (cols - 6)), y0 = Math.floor(Math.random() * rows * 0.4), len = Math.floor(rows * 0.5);
+        for (var y = y0; y < Math.min(rows, y0 + len); y++) walls[idx(x, y)] = 1;
+      }
+      start = idx(1, 1 + Math.floor(Math.random() * (rows - 2)));
+      goal = idx(cols - 2, 1 + Math.floor(Math.random() * (rows - 2)));
+      walls[start] = 0; walls[goal] = 0;
+      if (solve() && path.length > cols * 0.7) break;
+    }
+    phase = "search"; step = 0; pathStep = 0; hold = 0;
+  }
+  function rect(i, color, inset) {
+    var x = ox + (i % cols) * cell, y = oy + ((i / cols) | 0) * cell, m = inset || 1;
+    ctx.fillStyle = color; ctx.fillRect(x + m, y + m, cell - 2 * m, cell - 2 * m);
+  }
+  function center(i) { return [ox + (i % cols) * cell + cell / 2, oy + ((i / cols) | 0) * cell + cell / 2]; }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = pal.surface; ctx.fillRect(ox, oy, cols * cell, rows * cell);
+    ctx.strokeStyle = pal.line; ctx.lineWidth = 1; ctx.beginPath();
+    for (var x = 0; x <= cols; x++) { ctx.moveTo(ox + x * cell + .5, oy); ctx.lineTo(ox + x * cell + .5, oy + rows * cell); }
+    for (var y = 0; y <= rows; y++) { ctx.moveTo(ox, oy + y * cell + .5); ctx.lineTo(ox + cols * cell, oy + y * cell + .5); }
+    ctx.stroke();
+    for (var i = 0; i < walls.length; i++) if (walls[i]) rect(i, pal.muted, 2);
+    var shown = Math.min(step, order.length);
+    for (var k = 0; k < shown; k++) rect(order[k], pal.tint, 1);
+    if (phase === "search" && shown > 0) {
+      ctx.strokeStyle = pal.accent; ctx.lineWidth = 2;
+      var c = center(order[shown - 1]); ctx.strokeRect(c[0] - cell / 2 + 2, c[1] - cell / 2 + 2, cell - 4, cell - 4);
+    }
+    if (phase !== "search") {
+      var n = Math.min(pathStep, path.length);
+      ctx.strokeStyle = pal.accent; ctx.lineWidth = Math.max(3, cell * 0.28); ctx.lineCap = "round"; ctx.lineJoin = "round";
+      ctx.beginPath();
+      for (var p = 0; p < n; p++) { var q2 = center(path[p]); if (p) ctx.lineTo(q2[0], q2[1]); else ctx.moveTo(q2[0], q2[1]); }
+      ctx.stroke();
+    }
+    rect(start, pal.start, 2); rect(goal, pal.goal, 2);
+    if (phase === "fade") { ctx.globalAlpha = Math.min(1, hold); ctx.fillStyle = pal.paper; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
+  }
+  function tick(now) {
+    var dt = Math.min(0.05, (now - last) / 1000 || 0); last = now;
+    if (phase === "search") {
+      acc += dt * Math.max(40, order.length / 3.2);
+      var s = Math.floor(acc); acc -= s; step += s;
+      if (step >= order.length) { phase = "path"; acc = 0; }
+    } else if (phase === "path") {
+      acc += dt * 30; var s2 = Math.floor(acc); acc -= s2; pathStep += s2;
+      if (pathStep >= path.length) { phase = "hold"; hold = 0; }
+    } else if (phase === "hold") {
+      hold += dt; if (hold > 2.2) { phase = "fade"; hold = 0; }
+    } else if (phase === "fade") {
+      hold += dt * 2.5; if (hold >= 1) newProblem();
+    }
+    draw();
+    if (running && !reduce.matches) requestAnimationFrame(tick);
+  }
+  function showStatic() { phase = "hold"; step = order.length; pathStep = path.length; draw(); }
+  function start_() { last = performance.now(); requestAnimationFrame(tick); }
+
+  readPalette(); size(); newProblem();
+  if (reduce.matches) showStatic(); else start_();
+
+  var lastW = 0;
+  if ("ResizeObserver" in window) new ResizeObserver(function () {
+    var w = cv.getBoundingClientRect().width; if (Math.abs(w - lastW) < 2) return; lastW = w;
+    size(); newProblem(); if (reduce.matches) showStatic();
+  }).observe(cv);
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) {
+    var vis = es[0].isIntersecting;
+    if (vis && !running) { running = true; if (!reduce.matches) start_(); } else if (!vis) running = false;
+  }).observe(cv);
+  function repaint() { readPalette(); if (reduce.matches) draw(); }
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", repaint);
+  new MutationObserver(repaint).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+</body>
+</html>

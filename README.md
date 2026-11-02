@@ -1,32 +1,30 @@
-Quelques algos en Java issus de l'Intelligence Artificielle
+# Intelligence artificielle en Java
 
-## Recherche aveugle
+**Site du cours : https://emmanueladam.github.io/IntelligenceArtificielleJava/**
 
-- [largeur/profondeur](./deepAndWideSearch/src) présente des classes java pour la recherche en largeur ou profondeur
+Des algorithmes classiques d'IA en Java, à lire, lancer et modifier. Chaque dossier est un petit projet indépendant à ouvrir dans IntelliJ IDEA, Eclipse ou VS Code (JDK 17 ou plus récent).
 
-## Recherche informée
-- [A-Star](./astar/src) présente des classes java pour la recherche de solution par l'algorithme A*
+| Thème | Contenu |
+|---|---|
+| [Recherche dans un espace d'états](https://emmanueladam.github.io/IntelligenceArtificielleJava/#recherche) | Largeur / profondeur, A* sur le taquin, A* et Theta* sur une grille |
+| [Recherche locale et évolution](https://emmanueladam.github.io/IntelligenceArtificielleJava/#locale) | Le compte est bon, N-reines par réparation locale, algorithmes génétiques |
+| [Programmation par contraintes](https://emmanueladam.github.io/IntelligenceArtificielleJava/#contraintes) | Choco Solver : puzzles, planification, sécurité, optimisation ; Sat4J |
+| [IA pour les jeux](https://emmanueladam.github.io/IntelligenceArtificielleJava/#jeux) | Minimax et alpha-bêta, MCTS, TP Ludii |
+| [Clustering](https://emmanueladam.github.io/IntelligenceArtificielleJava/#clustering) | K-Means et DBSCAN, démos JavaFX et TP |
 
+## Bibliothèques
 
-## Recherche aléatoire 
+| Bibliothèque | Pour | Ajout |
+|---|---|---|
+| [Choco Solver](https://choco-solver.org/) | Programmation par contraintes | Maven `org.choco-solver:choco-solver` |
+| [Sat4J](https://www.sat4j.org/) | SAT | Maven `org.ow2.sat4j:org.ow2.sat4j.core` |
+| [JavaFX](https://openjfx.io/) | Démos de clustering | Maven `org.openjfx:javafx-controls` |
+| [Ludii](https://ludii.games/download.php) | TP IA pour les jeux | `Ludii.jar` téléchargé sur ludii.games |
 
-- [compteEstBonSimplifié](./compteEstBonSimplifie/src) est un exemple de recherche aléatoire pour la solution au problème du "compte est bon" : https://fr.wikipedia.org/wiki/Des_chiffres_et_des_lettres#Le_Compte_est_bon
+## Mettre à jour le site
 
-- [nQueensRandom](./nQueensRandom/src/centralised) est un exemple de résolution du problème des n-reines par placement aléatoire puis adaptation pour diminuer les conflits. temps de traitement : env. 1.5 secondes pour placer 1000 reines dans un echiquier de 1000x1000; 11ms pour placer 100 reines sur un echiquier de 100x100, et 0.6ms pour placer 8 reines, *etc.*
+Le site est une seule page (`index.html`) qui lit la liste des programmes dans `assets/catalogue.js`.
+Pour ajouter un exemple, copier une entrée de `catalogue.js` dans le bon thème et l'adapter. Les liens GitHub sont générés automatiquement.
 
-## Programmation par contraintes
-- [introduction à la CSP, COP](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/tree/master/progParContraintes) : page menant à l'introduction à la programmation par contraintes avec la librairie [ChocoSolver](https://choco-solver.org/)
-
-
-## Jeux (alphabeta, minimax, MCTS)
-
-- [MCTS](./MCTS) : MonteCarlo Tree Search : 2 applications permettant à 1 joueur d'affronter une IA qui s'est entrainée à l'aide d'un algorithme basé sur le principe du MonteCarlo Tree Search.
-  - TicTacToe est donc le jeu du morpion du du OXO.. L'IA par MonteCarlo n'a pas été optimisée, vous pouvez gagner.
-  - P4 est le jeu de 'Puissance4' ou 'Aligne4'. L'IA a été ici optimisée..
-- [JeuxLudii](./JeuxLudii) : utilisation de l'application et de la librairie Ludii pour le développement d'IAs basées sur MCTS. 
-- [jeux](https://github.com/EmmanuelADAM/IntelligenceArtificielleJava/tree/master/jeux) : contient des classes java permettant à 2 joueurs de s'affronter sur le jeu du Carré, et du Surakarta. A vous de définir une IA..
-### Minimax et alphabeta
-- [alphabeta](./alphabetaTicTacToe/src) : implementation of the minimax algorithm with alpha-beta pruning in Java. The example is based on the game of TicTacToe.
-  - Evaluations of situations are not perfect, so the AI can be beaten. Can you improve it? ((see ``evaluate`` method in ``Situation.java`` and/or values in ``SpecialSituations.java``))
-- [alphabetaConnect4](./alphabetaConnect4/src) : implementation of the minimax algorithm with alpha-beta pruning in Java. The example is based on the game of Connect4 (Puissance4)
-  - Evaluations of situations are not perfect, so the AI can be beaten. Can you improve it? (see ``dangerValue`` method in ``Situation.java`` (you can also change data in ``DangerPattern.java``))
+---
+Supports pédagogiques d'Emmanuel Adam, fournis tels quels pour un usage éducatif. Merci de citer la source en cas de réutilisation.
