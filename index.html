@@ -201,13 +201,36 @@ body.hide-solutions .solutions, body.hide-solutions .sol-pill { display: none; }
 
 /* Liste compacte (exemples d'un fichier) */
 .rows { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-.row { display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; padding: 11px 14px; }
+.row { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; padding: 11px 14px; }
 .row + .row { border-top: 1px solid var(--line); }
 .row:hover { background: color-mix(in srgb, var(--c) 6%, transparent); }
 .row .t { font-weight: 600; font-size: .95rem; }
 .row .d { color: var(--muted); font-size: .9rem; min-width: 0; }
 .row a { font: 500 12px/1 var(--f-mono); text-decoration: none; padding: 6px 8px; border-radius: 5px; border: 1px solid var(--line); white-space: nowrap; }
 .row a:hover { border-color: var(--ink); }
+.row .acts { display: flex; gap: 6px; }
+
+/* Commande « lancer » */
+.cmd { display: flex; align-items: stretch; min-width: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--paper); }
+.cmd code { flex: 1; min-width: 0; padding: 7px 9px; font: 400 12px/1.45 var(--f-mono); overflow-wrap: anywhere; color: var(--ink); }
+.cmd code::before { content: "$ "; color: var(--muted); }
+.copy {
+  border: 0; border-left: 1px solid var(--line); background: var(--surface); color: var(--muted);
+  font: 600 12px/1 var(--f-body); padding: 0 10px; cursor: pointer; white-space: nowrap;
+}
+.copy:hover { color: var(--ink); }
+.copy.done { color: var(--t-contraintes); }
+.row .copy { border: 1px solid var(--line); border-radius: 5px; padding: 6px 8px; }
+.gui { margin: 0; font-size: .82rem; color: var(--muted); }
+.gui::before { content: "▣ "; color: var(--c); }
+.act.cs { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); color: var(--accent); }
+.act.cs:hover { border-color: var(--accent); }
+
+/* Mise en route : deux façons de travailler */
+.way + .way { margin-top: 32px; }
+.way h3 { font: 700 1.15rem/1.2 var(--f-display); margin: 0 0 6px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.way h3 .pill { font-weight: 500; }
+.way > p { margin: 0 0 14px; color: var(--muted); font-size: .93rem; max-width: 70ch; }
 
 /* Encadré formule */
 .extras { padding: 20px; border: 1px dashed color-mix(in srgb, var(--c) 55%, var(--line)); border-radius: var(--radius); }
@@ -249,6 +272,7 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
   .steps, footer .wrap { grid-template-columns: minmax(0, 1fr); }
   .row { grid-template-columns: minmax(0, 1fr) auto; }
   .row .d { grid-column: 1 / -1; grid-row: 2; }
+  .row .acts { grid-column: 1 / -1; grid-row: 3; flex-wrap: wrap; }
   .result-count { margin-left: 0; }
   html { scroll-padding-top: 130px; }
   .switch .long { display: none; }
@@ -266,8 +290,8 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
       <p class="lede load-in d2">Des algorithmes classiques à lire, lancer et modifier : recherche dans un graphe, A*, recherche locale, algorithmes génétiques, programmation par contraintes, IA pour les jeux et clustering.</p>
       <div class="hero-actions load-in d3">
         <a class="btn primary" href="#recherche">Commencer par la recherche</a>
+        <a class="btn" id="cs-hero" href="https://codespaces.new/EmmanuelADAM/IntelligenceArtificielleJava?quickstart=1" target="_blank" rel="noopener">Ouvrir dans Codespaces ↗</a>
         <a class="btn" href="#demarrer">Mise en route</a>
-        <a class="btn" href="https://github.com/EmmanuelADAM/IntelligenceArtificielleJava" target="_blank" rel="noopener">Dépôt GitHub ↗</a>
       </div>
     </div>
     <div class="grid-box" aria-hidden="true">
@@ -308,19 +332,32 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
   <div class="theme-head">
     <div class="kicker">Avant de commencer</div>
     <h2>Mise en route</h2>
-    <p>Chaque dossier est un petit projet indépendant. Il suffit de l'ouvrir dans un IDE et de lancer la classe indiquée sur sa carte.</p>
+    <p>Deux façons de travailler : dans le navigateur avec GitHub Codespaces, sans rien installer, ou sur votre machine avec votre IDE.</p>
   </div>
   <div>
-    <ol class="steps">
-      <li><b>Récupérer le code</b>Cloner le dépôt, ou sur GitHub : <span class="mono">Code → Download ZIP</span>.</li>
-      <li><b>Ouvrir le projet</b>Ouvrir le dossier dans IntelliJ IDEA, Eclipse ou VS Code, avec un JDK 17 ou plus récent. Marquer <span class="mono">src</span> comme dossier source si besoin.</li>
-      <li><b>Lancer</b>Ajouter la bibliothèque éventuelle (tableau ci-dessous), puis exécuter la classe « à lancer ».</li>
-    </ol>
+    <div class="way">
+      <h3>En ligne, sans rien installer <span class="pill doc">Conseillé</span></h3>
+      <p>Codespaces ouvre tout le dépôt dans VS Code, dans le navigateur, avec Java 21 et les bibliothèques du cours déjà installées. Il faut un compte GitHub : le compte gratuit donne environ 60 heures par mois, et Codespaces est gratuit pour les étudiants inscrits à GitHub Education.</p>
+      <ol class="steps">
+        <li><b>Ouvrir</b><a href="https://codespaces.new/EmmanuelADAM/IntelligenceArtificielleJava?quickstart=1" target="_blank" rel="noopener">Ouvrir dans Codespaces ↗</a>. Le premier démarrage prend quelques minutes, les suivants reprennent votre espace là où vous l'aviez laissé.</li>
+        <li><b>Lancer</b>Copier la commande <span class="mono">lancer …</span> d'une carte et la coller dans le terminal. Ou ouvrir le fichier et faire <span class="mono">Ctrl+Maj+B</span>.</li>
+        <li><b>Voir les fenêtres</b>Pour Swing, JavaFX ou Ludii : onglet <span class="mono">Ports</span>, ligne 6080, icône globe, puis <span class="mono">Connect</span> (mot de passe <span class="mono">vscode</span>).</li>
+      </ol>
+    </div>
+    <div class="way">
+      <h3>Sur votre machine</h3>
+      <p>Chaque dossier est un petit projet indépendant, à ouvrir dans un IDE avec un JDK 17 ou plus récent.</p>
+      <ol class="steps">
+        <li><b>Récupérer le code</b>Cloner le <a href="https://github.com/EmmanuelADAM/IntelligenceArtificielleJava" target="_blank" rel="noopener">dépôt ↗</a>, ou sur GitHub : <span class="mono">Code → Download ZIP</span>.</li>
+        <li><b>Ouvrir le projet</b>Ouvrir le dossier dans IntelliJ IDEA, Eclipse ou VS Code. Marquer <span class="mono">src</span> comme dossier source si besoin.</li>
+        <li><b>Lancer</b>Ajouter la bibliothèque éventuelle (tableau ci-dessous), puis exécuter la classe indiquée sur la carte.</li>
+      </ol>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Bibliothèque</th><th>Pour</th><th>Comment l'ajouter</th></tr></thead>
         <tbody id="libs"></tbody>
       </table>
+    </div>
     </div>
   </div>
 </section>
@@ -357,6 +394,12 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
   var SITE = window.SITE, DATA = window.CATALOGUE, LIBS = window.LIBS || [];
   var BLOB = "https://github.com/" + SITE.repo + "/blob/" + SITE.branch + "/";
   var TREE = "https://github.com/" + SITE.repo + "/tree/" + SITE.branch + "/";
+  var CS = SITE.codespaces || "";
+  var GUI_LIBS = { "Swing": 1, "JavaFX": 1, "Ludii": 1 };
+  function cmd(path) {
+    var c = "lancer " + path;
+    return '<div class="cmd"><code>' + esc(c) + '</code><button type="button" class="copy" data-cmd="' + esc(c) + '" aria-label="Copier la commande">Copier</button></div>';
+  }
   var TYPES = {
     demo:  { label: "Démo",     kind: "demo", cls: "" },
     cours: { label: "Cours",    kind: "demo", cls: "doc" },
@@ -386,7 +429,8 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
         inner = '<ul class="rows">' + g.items.map(function (it) {
           count++;
           return '<li class="row" data-kind="demo" data-search="' + esc(norm([it.title, it.desc, it.file, th.title].join(" "))) + '"><span class="t">' + esc(it.title) +
-            '</span><span class="d">' + esc(it.desc) + "</span>" + ext(BLOB + url(it.file), esc(base(it.file)) + " ↗", "", "Code de " + it.title) + "</li>";
+            '</span><span class="d">' + esc(it.desc) + '</span><span class="acts">' + ext(BLOB + url(it.file), esc(base(it.file)) + " ↗", "", "Code de " + it.title) +
+            '<button type="button" class="copy" data-cmd="' + esc("lancer " + it.file) + '" aria-label="Copier la commande pour lancer ' + esc(it.title) + '">Copier « lancer »</button></span></li>';
         }).join("") + "</ul>";
       } else {
         inner = '<div class="cards">' + g.items.map(function (it) {
@@ -424,8 +468,9 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
       "<div><h4>" + esc(it.title) + '</h4><div class="path">' + esc(it.readme && !it.main ? it.readme : f + "/") + "</div></div>" +
       '<p class="desc">' + esc(it.desc) + "</p>" +
       (it.todo ? '<p class="todo"><b>À faire</b>' + esc(it.todo) + "</p>" : "") +
-      (it.main ? '<div class="run">Classe à lancer ' + ext(BLOB + url(f + "/" + it.main), esc(base(it.main))) + "</div>" : "") +
-      (it.files ? '<div class="files">Voir aussi : ' + it.files.map(function (x) { return ext(link(f + "/" + x), esc(base(x))); }).join(", ") + "</div>" : "") +
+      (it.main ? cmd(f + "/" + it.main) : "") +
+      ((it.libs || []).some(function (l) { return GUI_LIBS[l]; }) ? '<p class="gui">Ouvre une fenêtre : en ligne, l\'afficher via le port 6080.</p>' : "") +
+      (it.main || it.files ? '<div class="files">Code : ' + (it.main ? [it.main] : []).concat(it.files || []).map(function (x) { return ext(link(f + "/" + x), esc(base(x))); }).join(", ") + "</div>" : "") +
       (it.libs ? '<div class="libs">' + it.libs.map(function (l) { return "<span>" + esc(l) + "</span>"; }).join("") + "</div>" : "");
     if (it.solutions) {
       h += '<div class="solutions">' + it.solutions.map(function (s) {
@@ -434,7 +479,8 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
     }
     var acts = "";
     if (it.readme) acts += ext(BLOB + url(it.readme), "Lire ↗", "act main");
-    acts += ext(TREE + url(f), (it.readme ? "Dossier" : "Code") + " ↗", it.readme ? "act" : "act main");
+    acts += ext(TREE + url(f), "Dossier ↗", it.readme ? "act" : "act main");
+    if (CS && it.main) acts += ext(CS, "Codespaces ↗", "act cs", "Ouvrir le dépôt dans Codespaces");
     return h + '<div class="actions">' + acts + "</div></article>";
   }
 
@@ -444,6 +490,20 @@ footer .legend-row { display: flex; gap: 8px; align-items: center; }
   document.getElementById("libs").innerHTML = LIBS.map(function (l) {
     return "<tr><td>" + ext(l.url, esc(l.name) + " ↗") + "</td><td>" + esc(l.use) + "</td><td><code>" + esc(l.how) + "</code></td></tr>";
   }).join("");
+
+  /* ----- Copier une commande ----- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".copy"); if (!b) return;
+    var txt = b.dataset.cmd, label = b.textContent;
+    function ok() { b.textContent = "Copié"; b.classList.add("done"); setTimeout(function () { b.textContent = label; b.classList.remove("done"); }, 1500); }
+    function fallback() {
+      var code = b.parentElement.querySelector("code");
+      if (code) { var r = document.createRange(); r.selectNodeContents(code); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      b.textContent = "Ctrl+C pour copier";
+      setTimeout(function () { b.textContent = label; }, 2500);
+    }
+    try { navigator.clipboard.writeText(txt).then(ok, fallback); } catch (err) { fallback(); }
+  });
 
   /* ----- Filtres ----- */
   var q = document.getElementById("q"), kind = "all";

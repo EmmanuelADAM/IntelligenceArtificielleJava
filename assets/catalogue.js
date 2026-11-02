@@ -26,6 +26,7 @@
 window.SITE = {
   repo: "EmmanuelADAM/IntelligenceArtificielleJava",
   branch: "master",
+  codespaces: "https://codespaces.new/EmmanuelADAM/IntelligenceArtificielleJava?quickstart=1",
   author: "Emmanuel Adam",
 };
 
@@ -323,7 +324,7 @@ window.CATALOGUE = [
             desc: "Des nuages de points se colorent au fil des itérations, à mesure que les centres se déplacent.",
             main: "AppliKMeansCouleurs.java",
             files: ["AlgoKMeans2D.java", "Cluster2D.java", "Data2D.java"],
-            libs: ["JavaFX"],
+            libs: ["JavaFX", "OpenCSV"],
           },
           {
             folder: "Clustering/src/colordbscan",
@@ -347,6 +348,7 @@ window.CATALOGUE = [
             main: "AlgoKMeans.java",
             files: ["TP/KMeansJava.zip", "Data-Partens-EA-cl1.csv"],
             todo: "Partir du squelette KMeansJava.zip (Data, Cluster, AlgoKMeans).",
+            libs: ["OpenCSV"],
             solutions: [{ path: "Clustering/src/testKMeans/TP/soluce", title: "Corrigé" }],
           },
           {
@@ -370,6 +372,7 @@ window.CATALOGUE = [
 window.LIBS = [
   { name: "Choco Solver", use: "Programmation par contraintes", how: "Maven : org.choco-solver:choco-solver", url: "https://choco-solver.org/" },
   { name: "Sat4J", use: "Satisfiabilité (SAT)", how: "Maven : org.ow2.sat4j:org.ow2.sat4j.core", url: "https://www.sat4j.org/" },
+  { name: "OpenCSV", use: "Lecture des données CSV (clustering)", how: "Maven : com.opencsv:opencsv (version 4.x)", url: "https://opencsv.sourceforge.net/" },
   { name: "JavaFX", use: "Démos de clustering", how: "Maven : org.openjfx:javafx-controls", url: "https://openjfx.io/" },
   { name: "Ludii", use: "TP IA pour les jeux", how: "Ludii.jar téléchargé sur ludii.games", url: "https://ludii.games/download.php" },
 ];
